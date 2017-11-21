@@ -3,13 +3,14 @@ use std::str;
 
 use board::move_encode::*;
 use board::helper::*;
+use board::hand::*;
 use board::rules::MOVABLES;
 
 #[derive(Clone, Debug)]
 pub struct State {
     pub color: bool,                    // true: black, false: white
     pub board: [[u8; 9]; 9],
-    pub captured: [[u8; 8]; 2],         // captured[0]: white, captured[1]: black
+    pub hand: [Hand; 2],                // hand[0]: white, hand[1]: black
     pawn_checker: [[bool; 9]; 2],   // pawn_checker[0]: white, pawn_checker[1]: black
 }
 
@@ -27,9 +28,13 @@ impl State {
                  [1,  1,  1,  1,  1,  1,  1,  1,  1 ],
                  [0,  5,  0,  0,  0,  0,  0,  6,  0 ],
                  [2,  3,  4,  13, 14, 13, 4,  3,  2 ]],
-            captured: [[0; 8]; 2],
+            hand: [Hand::new(), Hand::new()],
             pawn_checker: [[true; 9]; 2],
         }
+    }
+
+    pub fn is_lose(&self) -> bool {
+        self.hand[!self.color as usize].own(7)
     }
 
     pub fn print(&self) {
@@ -41,19 +46,15 @@ impl State {
         }
         print!("先手の持ち駒: ");
         for n in 0..8 {
-            let mut k = self.captured[1][n];
-            while k > 0 {
+            for k in 0..self.hand[1].get_num(n) {
                 print!("{}", kind_to_japanese(n));
-                k -= 1;
             }
         }
         println!("");
         print!("後手の持ち駒: ");
         for n in 0..8 {
-            let mut k = self.captured[0][n];
-            while k > 0 {
+            for k in 0..self.hand[0].get_num(n) {
                 print!("{}", kind_to_japanese(n));
-                k -= 1;
             }
         }
         println!("");
@@ -64,7 +65,7 @@ impl State {
         else { print!("△"); }
         print!("{}{}", 9 - mv.to_j(), 1 + mv.to_i());
         if mv.is_drop() {
-            print!("{}打", piece_to_japanese(kind_to_piece(mv.kind(), self.color)));
+            print!("{}打", piece_to_japanese(kind_to_piece(mv.drop_kind(), self.color)));
         } else {
             print!("{}", piece_to_japanese(self.board[mv.from_i() as usize][mv.from_j() as usize]));
             if mv.is_promote() {
@@ -76,9 +77,9 @@ impl State {
 
     pub fn apply_move(&mut self, mv: &Move) {
         if mv.is_drop() {
-            self.captured[self.color as usize][mv.kind() as usize] -= 1;
-            self.board[mv.to_i() as usize][mv.to_j() as usize] = kind_to_piece(mv.kind(), self.color);
-            if mv.kind() == 0 { // pawn
+            self.hand[self.color as usize].sub(mv.drop_kind() as usize);
+            self.board[mv.to_i() as usize][mv.to_j() as usize] = kind_to_piece(mv.drop_kind(), self.color);
+            if mv.drop_kind() == 0 { // pawn
                 self.pawn_checker[self.color as usize][mv.to_j() as usize] = true;
             }
         } else {
@@ -89,7 +90,7 @@ impl State {
             if to_piece != 0 {
                 // capture
                 let captured_kind = get_kind(to_piece);
-                self.captured[self.color as usize][captured_kind as usize] += 1;
+                self.hand[self.color as usize].add(captured_kind as usize);
                 if captured_kind == 0 { // pawn
                     self.pawn_checker[!self.color as usize][mv.to_j() as usize] = false;
                 }
@@ -104,6 +105,9 @@ impl State {
                 self.board[mv.to_i() as usize][mv.to_j() as usize] = piece;
             }
         }
+    }
+
+    pub fn change_color(&mut self) {
         self.color = !self.color;
     }
 
@@ -112,7 +116,7 @@ impl State {
         // drop
         let mut captured_kinds = Vec::new();
         for n in 0..8 {
-            if self.captured[self.color as usize][n] != 0 {
+            if self.hand[self.color as usize].own(n) {
                 captured_kinds.push(n);
             }
         }

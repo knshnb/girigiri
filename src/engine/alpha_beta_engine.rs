@@ -27,5 +27,9 @@ impl AlphaBetaEngine {
         }
 
         self.state.apply_move(&pair.1);
+        self.state.change_color();
+    }
+    pub fn is_lose(&self) -> bool {
+        self.state.is_lose()
     }
 }

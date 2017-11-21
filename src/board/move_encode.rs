@@ -42,7 +42,7 @@ impl Move {
     pub fn to_j(&self) -> i8 {
         (self.to & 0b01111111) % 9
     }
-    pub fn kind(&self) -> usize {
+    pub fn drop_kind(&self) -> usize {
         (self.from as u8 - 81) as usize
     }
 }
