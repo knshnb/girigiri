@@ -146,7 +146,7 @@ impl State {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
                                 if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
-                                    if to_i <= 2 || from_i <= 2 {
+                                    if to_i <= 2 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                     }
@@ -158,7 +158,7 @@ impl State {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
                                 if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
-                                    if to_i <= 2 || from_i <= 2 {
+                                    if to_i <= 2 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                     }
@@ -290,7 +290,7 @@ impl State {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
                                 if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
-                                    if to_i >= 6 || from_i >= 6 {
+                                    if to_i >= 6 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                     }
@@ -302,7 +302,7 @@ impl State {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
                                 if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
-                                    if to_i >= 6 || from_i >= 6 {
+                                    if to_i >= 6 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                     }
