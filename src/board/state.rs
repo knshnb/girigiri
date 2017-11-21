@@ -147,10 +147,11 @@ impl State {
                                 let to_j = (from_j as i8) + diff_j;
                                 if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     if to_i <= 2 {
-                                        // can promote
+                                        // always promote when possible
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                    } else {
+                                        moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                     }
-                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         3 =>
@@ -162,7 +163,10 @@ impl State {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                     }
-                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                    if to_i >= 2 {
+                                        // must promote in the other cases
+                                        moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                    }
                                 }
                             }
                         4 =>
@@ -203,19 +207,25 @@ impl State {
                                     match whose(self.board[to_i as usize][to_j as usize]) {
                                         Color::Black => break,
                                         Color::White => {
-                                            if to_i <= 2 || from_i <= 2 {
+                                            if to_i <= 2 {
                                                 // can promote
                                                 moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                             }
-                                            moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            if to_i >= 2 {
+                                                // must promote in the other cases
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            }
                                             break;
                                         },
                                         Color::Null => {
-                                            if to_i <= 2 || from_i <= 2 {
+                                            if to_i <= 2 {
                                                 // can promote
                                                 moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                             }
-                                            moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            if to_i >= 2 {
+                                                // must promote in the other cases
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            }
                                         },
                                     }
                                 }
@@ -231,24 +241,26 @@ impl State {
                                             Color::Black => break,
                                             Color::White => {
                                                 if to_i <= 2 || from_i <= 2 {
-                                                    // can promote
+                                                    // always promote when possible
                                                     moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                } else {
+                                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 }
-                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 break;
                                             },
                                             Color::Null => {
                                                 if to_i <= 2 || from_i <= 2 {
-                                                    // can promote
+                                                    // always promote when possible
                                                     moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                } else {
+                                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 }
-                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                             },
                                         }
                                     }
                                 }
                             }
-                        6 => // bishop
+                        6 => // rook
                             for &rook_line in MOVABLES.rook_black.iter() {
                                 for &(diff_i, diff_j) in rook_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
@@ -259,18 +271,20 @@ impl State {
                                             Color::Black => break,
                                             Color::White => {
                                                 if to_i <= 2 || from_i <= 2 {
-                                                    // can promote
+                                                    // always promote when possible
                                                     moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                } else {
+                                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 }
-                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 break;
                                             },
                                             Color::Null => {
                                                 if to_i <= 2 || from_i <= 2 {
-                                                    // can promote
+                                                    // always promote when possible
                                                     moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                } else {
+                                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 }
-                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                             },
                                         }
                                     }
@@ -291,10 +305,11 @@ impl State {
                                 let to_j = (from_j as i8) + diff_j;
                                 if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     if to_i >= 6 {
-                                        // can promote
+                                        // always promote when possible
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                    } else {
+                                        moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                     }
-                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         17 =>
@@ -306,7 +321,10 @@ impl State {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                     }
-                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                    if to_i <= 6 {
+                                        // must promote in the other cases
+                                        moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                    }
                                 }
                             }
                         18 =>
@@ -347,19 +365,25 @@ impl State {
                                     match whose(self.board[to_i as usize][to_j as usize]) {
                                         Color::White => break,
                                         Color::Black => {
-                                            if to_i >= 6 || from_i >= 6 {
+                                            if to_i >= 6 {
                                                 // can promote
                                                 moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                             }
-                                            moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            if to_i <= 6 {
+                                                // must promote in the other cases
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            }
                                             break;
                                         },
                                         Color::Null => {
-                                            if to_i >= 6 || from_i >= 6 {
+                                            if to_i >= 6 {
                                                 // can promote
                                                 moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
                                             }
-                                            moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            if to_i <= 6 {
+                                                // must promote in the other cases
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            }
                                         },
                                     }
                                 }
@@ -375,24 +399,26 @@ impl State {
                                             Color::White => break,
                                             Color::Black => {
                                                 if to_i >= 6 || from_i >= 6 {
-                                                    // can promote
+                                                    // always promote when possible
                                                     moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                } else {
+                                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 }
-                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 break;
                                             },
                                             Color::Null => {
                                                 if to_i >= 6 || from_i >= 6 {
-                                                    // can promote
+                                                    // always promote when possible
                                                     moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                } else {
+                                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 }
-                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                             },
                                         }
                                     }
                                 }
                             }
-                        20 => // bishop
+                        20 => // rook
                             for &rook_line in MOVABLES.rook_white.iter() {
                                 for &(diff_i, diff_j) in rook_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
@@ -403,18 +429,20 @@ impl State {
                                             Color::White => break,
                                             Color::Black => {
                                                 if to_i >= 6 || from_i >= 6 {
-                                                    // can promote
+                                                    // always promote when possible
                                                     moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                } else {
+                                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 }
-                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 break;
                                             },
                                             Color::Null => {
                                                 if to_i >= 6 || from_i >= 6 {
-                                                    // can promote
+                                                    // always promote when possible
                                                     moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                } else {
+                                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                                 }
-                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                             },
                                         }
                                     }
