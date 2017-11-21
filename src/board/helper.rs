@@ -43,7 +43,7 @@ pub fn get_kind(piece: u8) -> u8 {
         }
     }
 }
-pub fn kind_to_japanese(kind: u8) -> &'static str {
+pub fn kind_to_japanese(kind: usize) -> &'static str {
     match kind {
         0   => " 歩",
         1   => " 香",
@@ -57,7 +57,7 @@ pub fn kind_to_japanese(kind: u8) -> &'static str {
     }
 }
 
-pub fn kind_to_piece(kind: u8, is_black: bool) -> u8 {
+pub fn kind_to_piece(kind: usize, is_black: bool) -> u8 {
     let black_piece = match kind {
         0 => 1,
         1 => 2,

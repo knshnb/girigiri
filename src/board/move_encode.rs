@@ -42,7 +42,12 @@ impl Move {
     pub fn to_j(&self) -> i8 {
         (self.to & 0b01111111) % 9
     }
-    pub fn kind(&self) -> u8 {
-        self.from as u8 - 81
+    pub fn kind(&self) -> usize {
+        (self.from as u8 - 81) as usize
     }
 }
+
+pub const NULL_MOVE: Move = Move {
+    from: 0,
+    to: 0,
+};

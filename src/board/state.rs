@@ -5,10 +5,11 @@ use board::move_encode::*;
 use board::helper::*;
 use board::rules::MOVABLES;
 
+#[derive(Clone, Debug)]
 pub struct State {
-    color: bool,                    // true: black, false: white
-    board: [[u8; 9]; 9],
-    captured: [[u8; 8]; 2],         // captured[0]: white, captured[1]: black
+    pub color: bool,                    // true: black, false: white
+    pub board: [[u8; 9]; 9],
+    pub captured: [[u8; 8]; 2],         // captured[0]: white, captured[1]: black
     pawn_checker: [[bool; 9]; 2],   // pawn_checker[0]: white, pawn_checker[1]: black
 }
 
@@ -42,7 +43,7 @@ impl State {
         for n in 0..8 {
             let mut k = self.captured[1][n];
             while k > 0 {
-                print!("{}", kind_to_japanese(n as u8));
+                print!("{}", kind_to_japanese(n));
                 k -= 1;
             }
         }
@@ -51,7 +52,7 @@ impl State {
         for n in 0..8 {
             let mut k = self.captured[0][n];
             while k > 0 {
-                print!("{}", kind_to_japanese(n as u8));
+                print!("{}", kind_to_japanese(n));
                 k -= 1;
             }
         }
