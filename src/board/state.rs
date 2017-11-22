@@ -290,6 +290,68 @@ impl State {
                                     }
                                 }
                             }
+                        11 => // horse
+                            // long move
+                        {
+                            for &bishop_line in MOVABLES.bishop_black.iter() {
+                                for &(diff_i, diff_j) in bishop_line.iter() {
+                                    let to_i = (from_i as i8) + diff_i;
+                                    let to_j = (from_j as i8) + diff_j;
+                                    if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
+                                    else {
+                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                            Color::Black => break,
+                                            Color::White => {
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                break;
+                                            },
+                                            Color::Null => {
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                            // normal move
+                            for &(diff_i, diff_j) in MOVABLES.normal_horse_black.iter() {
+                                let to_i = (from_i as i8) + diff_i;
+                                let to_j = (from_j as i8) + diff_j;
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                }
+                            }
+                        }
+                        12 => // dragon
+                            // long move
+                        {
+                            for &rook_line in MOVABLES.rook_black.iter() {
+                                for &(diff_i, diff_j) in rook_line.iter() {
+                                    let to_i = (from_i as i8) + diff_i;
+                                    let to_j = (from_j as i8) + diff_j;
+                                    if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
+                                    else {
+                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                            Color::Black => break,
+                                            Color::White => {
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                break;
+                                            },
+                                            Color::Null => {
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                            // normal move
+                            for &(diff_i, diff_j) in MOVABLES.normal_dragon_black.iter() {
+                                let to_i = (from_i as i8) + diff_i;
+                                let to_j = (from_j as i8) + diff_j;
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                }
+                            }
+                        }
                         _   => ()
                     }
                 }
@@ -448,6 +510,68 @@ impl State {
                                     }
                                 }
                             }
+                        25 => // horse
+                            // long move
+                        {
+                            for &bishop_line in MOVABLES.bishop_white.iter() {
+                                for &(diff_i, diff_j) in bishop_line.iter() {
+                                    let to_i = (from_i as i8) + diff_i;
+                                    let to_j = (from_j as i8) + diff_j;
+                                    if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
+                                    else {
+                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                            Color::White => break,
+                                            Color::Black => {
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                break;
+                                            },
+                                            Color::Null => {
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                            // normal move
+                            for &(diff_i, diff_j) in MOVABLES.normal_horse_white.iter() {
+                                let to_i = (from_i as i8) + diff_i;
+                                let to_j = (from_j as i8) + diff_j;
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                }
+                            }
+                        }
+                        26 => // dragon
+                            // long move
+                        {
+                            for &rook_line in MOVABLES.rook_white.iter() {
+                                for &(diff_i, diff_j) in rook_line.iter() {
+                                    let to_i = (from_i as i8) + diff_i;
+                                    let to_j = (from_j as i8) + diff_j;
+                                    if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
+                                    else {
+                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                            Color::White => break,
+                                            Color::Black => {
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                                break;
+                                            },
+                                            Color::Null => {
+                                                moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                            // normal move
+                            for &(diff_i, diff_j) in MOVABLES.normal_dragon_white.iter() {
+                                let to_i = (from_i as i8) + diff_i;
+                                let to_j = (from_j as i8) + diff_j;
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                    moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
+                                }
+                            }
+                        }
                         _   => ()
                     }
                 }
