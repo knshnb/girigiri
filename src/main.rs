@@ -1,8 +1,6 @@
 #[macro_use]
 extern crate lazy_static;
-extern crate rand;
 
-use std::io;
 use std::time::Instant;
 
 mod engine;
@@ -13,7 +11,6 @@ use engine::alpha_beta_engine::*;
 
 fn main() {
     let mut n = 1;
-    let mut input = String::new();
     let mut engine = AlphaBetaEngine::new();
     let start = Instant::now();
     loop {

@@ -10,7 +10,7 @@ pub struct HashValue {
     pub color: bool, // is_black
     pub value: i32,
     pub remain_depth: u8,
-    pub best_move: Move
+    pub best_move: Move,
 }
 
 lazy_static! {
@@ -35,9 +35,7 @@ lazy_static! {
         m
     };
     pub static ref HASH_TABLE: RwLock<HashMap<u64, HashValue>> = {
-        let mut m = HashMap::new();
+        let m = HashMap::new();
         RwLock::new(m)
     };
 }
-
-// static mut HASH_TABLE: HashMap<u64, HashValue> = HashMap::new();

@@ -10,7 +10,7 @@ use std::collections::HashMap;
 pub fn sub_search(ref mut state: &State, depth: u8, alpha: i32, beta: i32, mut hash_table: &mut HashMap<u64, HashValue>) -> (i32, Move) {
     if hash_table.contains_key(&state.hash_key) {
         let hash_val = &hash_table[&state.hash_key];
-        if (state.color == hash_val.color && depth == hash_val.remain_depth) {
+        if state.color == hash_val.color && depth == hash_val.remain_depth {
             return (hash_val.value, hash_val.best_move);
         }
     }

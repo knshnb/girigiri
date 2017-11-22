@@ -48,14 +48,14 @@ impl State {
         }
         print!("先手の持ち駒: ");
         for n in 0..8 {
-            for k in 0..self.hand[1].get_num(n) {
+            for _ in 0..self.hand[1].get_num(n) {
                 print!("{}", kind_to_japanese(n));
             }
         }
         println!("");
         print!("後手の持ち駒: ");
         for n in 0..8 {
-            for k in 0..self.hand[0].get_num(n) {
+            for _ in 0..self.hand[0].get_num(n) {
                 print!("{}", kind_to_japanese(n));
             }
         }
