@@ -5,3 +5,4 @@ authors = ["Kenshin Abe <abe.kenshin@gmail.com>"]
 
 [dependencies]
 rand = "0.3.0"
+lazy_static = "0.2"

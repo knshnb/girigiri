@@ -1,10 +1,10 @@
 use std::str;
-// use std::collections::HashMap;
 
 use board::move_encode::*;
 use board::helper::*;
 use board::hand::*;
 use board::rules::MOVABLES;
+use board::hash::*;
 
 #[derive(Clone, Debug)]
 pub struct State {
@@ -12,6 +12,7 @@ pub struct State {
     pub board: [[u8; 9]; 9],
     pub hand: [Hand; 2],                // hand[0]: white, hand[1]: black
     pawn_checker: [[bool; 9]; 2],   // pawn_checker[0]: white, pawn_checker[1]: black
+    pub hash_key: u64,
 }
 
 impl State {
@@ -30,6 +31,7 @@ impl State {
                  [2,  3,  4,  13, 14, 13, 4,  3,  2 ]],
             hand: [Hand::new(), Hand::new()],
             pawn_checker: [[true; 9]; 2],
+            hash_key: 0,
         }
     }
 
@@ -78,10 +80,13 @@ impl State {
     pub fn apply_move(&mut self, mv: &Move) {
         if mv.is_drop() {
             self.hand[self.color as usize].sub(mv.drop_kind() as usize);
-            self.board[mv.to_i() as usize][mv.to_j() as usize] = kind_to_piece(mv.drop_kind(), self.color);
+            let piece = kind_to_piece(mv.drop_kind(), self.color);
+            self.board[mv.to_i() as usize][mv.to_j() as usize] = piece;
             if mv.drop_kind() == 0 { // pawn
                 self.pawn_checker[self.color as usize][mv.to_j() as usize] = true;
             }
+            self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+            self.hash_key = self.hash_key.wrapping_sub(HAND_HASH[self.color as usize][mv.drop_kind()]);
         } else {
             let piece = self.board[mv.from_i() as usize][mv.from_j() as usize];
             self.board[mv.from_i() as usize][mv.from_j() as usize] = 0;
@@ -94,6 +99,8 @@ impl State {
                 if captured_kind == 0 { // pawn
                     self.pawn_checker[!self.color as usize][mv.to_j() as usize] = false;
                 }
+                self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[to_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+                self.hash_key = self.hash_key.wrapping_add(HAND_HASH[self.color as usize][captured_kind as usize]);
             }
 
             if mv.is_promote() {
@@ -101,9 +108,12 @@ impl State {
                 if piece == 1 || piece == 15 { // pawn
                     self.pawn_checker[self.color as usize][mv.to_j() as usize] = false;
                 }
+                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[promote(piece) as usize][mv.to_i() as usize][mv.to_j() as usize]);
             } else {
                 self.board[mv.to_i() as usize][mv.to_j() as usize] = piece;
+                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
             }
+            self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
         }
     }
 

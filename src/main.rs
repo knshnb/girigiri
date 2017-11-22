@@ -1,3 +1,7 @@
+#[macro_use]
+extern crate lazy_static;
+extern crate rand;
+
 use std::io;
 use std::time::Instant;
 

@@ -1,3 +1,4 @@
+#[derive(Copy, Clone)]
 pub struct Move {
     pub from: i8,
     pub to: i8,
