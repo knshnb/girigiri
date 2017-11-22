@@ -115,7 +115,7 @@ impl State {
         let mut moves: Vec<Move> = Vec::new();
         // drop
         let mut captured_kinds = Vec::new();
-        for n in 0..8 {
+        for n in 0..7 {
             if self.hand[self.color as usize].own(n) {
                 captured_kinds.push(n);
             }
