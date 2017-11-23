@@ -27,7 +27,7 @@ pub fn promote(piece: u8) -> u8 {
     piece + 6
 }
 
-pub fn get_kind(piece: u8) -> u8 {
+pub fn get_kind(piece: u8) -> usize {
     match piece {
         1 | 15 | 7 | 21 => 0, // pawn
         2 | 16 | 8 | 22 => 1, // lance
