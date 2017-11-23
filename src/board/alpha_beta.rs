@@ -8,16 +8,18 @@ use board::hash::*;
 
 pub fn sub_search(ref mut state: &State, depth: u8, alpha: i32, beta: i32) -> (i32, Move) {
     let mut first_move = NULL_MOVE;
+    let mut entry;
     unsafe {
-        let entry = HASH_TABLE[(state.hash_key & HASH_KEY_MASK) as usize];
-        if state.hash_key == entry.hash_key && state.color == entry.color {
-            if depth == entry.remain_depth {
-                return (entry.value, entry.best_move);
-            } else {
-                first_move = entry.best_move;
-            }
+        entry = HASH_TABLE[(state.hash_key & HASH_KEY_MASK) as usize];
+    }
+    if state.hash_key == entry.hash_key && state.color == entry.color {
+        if depth <= entry.remain_depth {
+            return (entry.value, entry.best_move);
+        } else {
+            first_move = entry.best_move;
         }
     }
+
     let mut best_pair;
     if depth == 0 {
         best_pair = (eval(&state), NULL_MOVE)
