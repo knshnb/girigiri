@@ -82,19 +82,20 @@ impl State {
 
     pub fn apply_move(&mut self, mv: &Move) {
         if mv.is_drop() {
-            self.hand[self.color as usize].sub(mv.drop_kind() as usize);
-            let piece = kind_to_piece(mv.drop_kind(), self.color);
-            self.board[mv.to_i() as usize][mv.to_j() as usize] = piece;
-            if mv.drop_kind() == 0 { // pawn
+            let drop_kind = mv.drop_kind();
+            let drop_piece = kind_to_piece(drop_kind, self.color);
+            self.hand[self.color as usize].sub(drop_kind);
+            self.board[mv.to_i() as usize][mv.to_j() as usize] = drop_piece;
+            if drop_kind == 0 { // pawn
                 self.pawn_checker[self.color as usize][mv.to_j() as usize] = true;
             }
             // weight
-            self.weight -= KIND_TO_WEIGHT[mv.drop_kind() as usize] / 10;
+            self.weight -= KIND_TO_WEIGHT[drop_kind as usize] / 10;
             // hash
-            self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
-            self.hash_key = self.hash_key.wrapping_sub(HAND_HASH[self.color as usize][mv.drop_kind()]);
+            self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[drop_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+            self.hash_key = self.hash_key.wrapping_sub(HAND_HASH[self.color as usize][drop_kind]);
         } else {
-            let piece = self.board[mv.from_i() as usize][mv.from_j() as usize];
+            let from_piece = self.board[mv.from_i() as usize][mv.from_j() as usize];
             self.board[mv.from_i() as usize][mv.from_j() as usize] = 0;
             
             let to_piece = self.board[mv.to_i() as usize][mv.to_j() as usize];
@@ -114,22 +115,23 @@ impl State {
             }
 
             if mv.is_promote() {
-                self.board[mv.to_i() as usize][mv.to_j() as usize] = promote(piece);
-                if piece == 1 || piece == 15 { // pawn
+                let promoted_piece = promote(from_piece);
+                self.board[mv.to_i() as usize][mv.to_j() as usize] = promoted_piece;
+                if from_piece == 1 || from_piece == 15 { // pawn
                     self.pawn_checker[self.color as usize][mv.to_j() as usize] = false;
                 }
                 // weight
-                self.weight += PIECE_TO_WEIGHT[promote(piece) as usize];
-                self.weight -= PIECE_TO_WEIGHT[piece as usize];
+                self.weight += PIECE_TO_WEIGHT[promoted_piece as usize];
+                self.weight -= PIECE_TO_WEIGHT[from_piece as usize];
                 // hash
-                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[promote(piece) as usize][mv.to_i() as usize][mv.to_j() as usize]);
+                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[promoted_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
             } else {
                 // hash
-                self.board[mv.to_i() as usize][mv.to_j() as usize] = piece;
-                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+                self.board[mv.to_i() as usize][mv.to_j() as usize] = from_piece;
+                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[from_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
             }
             // hash
-            self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
+            self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[from_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
         }
         self.color = !self.color;
         self.weight = -self.weight;
