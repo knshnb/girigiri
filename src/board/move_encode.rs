@@ -48,6 +48,12 @@ impl Move {
     }
 }
 
+impl PartialEq for Move {
+    fn eq(&self, other:&Move) -> bool {
+        self.from == other.from && self.to == other.to
+    }
+}
+
 pub const NULL_MOVE: Move = Move {
     from: 0,
     to: 0,
