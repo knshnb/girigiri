@@ -131,9 +131,6 @@ impl State {
             // hash
             self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
         }
-    }
-
-    pub fn change_color(&mut self) {
         self.color = !self.color;
         self.weight = -self.weight;
     }
