@@ -45,6 +45,9 @@ impl State {
     }
 
     pub fn print(&self) {
+        print!("{}th, ", self.nth);
+        if self.color { println!("color: black"); }
+        else { println!("color: white"); }
         for i in 0..9 {
             for j in 0..9 {
                 print!("{}", piece_to_japanese(self.board[i][j]));
@@ -65,6 +68,19 @@ impl State {
             }
         }
         println!("");
+    }
+
+    pub fn print_debug(&self) {
+        self.print();
+        println!("hash key: {}", self.hash_key);
+        println!("weight: {}", self.weight);
+        println!("black's pawn checker: {:?}", self.pawn_checker[1]);
+        println!("white's pawn checker: {:?}", self.pawn_checker[0]);
+        let legal_moves = self.legal_move();
+        println!("legal move: {}", legal_moves.len());
+        for mv in legal_moves {
+            self.print_move(&mv);
+        }
     }
 
     pub fn print_move(&self, mv: &Move) {
