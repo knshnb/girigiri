@@ -124,7 +124,7 @@ impl State {
             if to_piece != 0 {
                 let captured_kind = get_kind(to_piece);
                 self.hand[self.color as usize].add(captured_kind);
-                if captured_kind == 0 { // pawn
+                if to_piece == 1 || to_piece == 15 { // pawn
                     self.pawn_checker[!self.color as usize][mv.to_j() as usize] = false;
                 }
                 // weight
