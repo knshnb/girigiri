@@ -4,7 +4,7 @@ use board::move_encode::*;
 use std::time::Instant;
 
 pub struct AlphaBetaEngine {
-    state: State,
+    pub state: State,
 }
 
 impl AlphaBetaEngine {
@@ -19,7 +19,7 @@ impl AlphaBetaEngine {
         let mut pair = (0, NULL_MOVE);
         for depth in 0..5 {
             let start = Instant::now();
-            pair = search(&self.state, depth as u8);
+            pair = search(&mut self.state, depth as u8);
             let end = start.elapsed();
             println!("depth: {}, eval: {}, move: ", depth, pair.0);
             self.state.print_move(&pair.1);

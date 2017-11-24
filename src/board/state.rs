@@ -6,9 +6,10 @@ use board::hand::*;
 use board::rules::MOVABLES;
 use board::hash::*;
 use board::eval::*;
+use board::past_captured_piece::*;
 
-#[derive(Clone, Debug)]
 pub struct State {
+    pub nth: u16,
     pub color: bool,                    // true: black, false: white
     pub board: [[u8; 9]; 9],
     pub hand: [Hand; 2],                // hand[0]: white, hand[1]: black
@@ -20,6 +21,7 @@ pub struct State {
 impl State {
     pub fn new() -> State {
         State {
+            nth: 0,
             color: true,
             board: // initial position
                 [[16, 17, 18, 27, 28, 27, 18, 17, 16],
@@ -99,6 +101,9 @@ impl State {
             self.board[mv.from_i() as usize][mv.from_j() as usize] = 0;
             
             let to_piece = self.board[mv.to_i() as usize][mv.to_j() as usize];
+            unsafe {
+                PAST_CAPTURED_PIECES[self.nth as usize] = to_piece;
+            }
             // capture
             if to_piece != 0 {
                 let captured_kind = get_kind(to_piece);
@@ -135,6 +140,67 @@ impl State {
         }
         self.color = !self.color;
         self.weight = -self.weight;
+        self.nth += 1;
+    }
+
+    pub fn undo_move(&mut self, mv: &Move) {
+        self.nth -= 1;
+        self.weight = -self.weight;
+        self.color = !self.color;
+        let to_piece = self.board[mv.to_i() as usize][mv.to_j() as usize];
+        if mv.is_drop() {
+            let drop_kind = mv.drop_kind();
+            self.board[mv.to_i() as usize][mv.to_j() as usize] = 0;
+            self.hand[self.color as usize].add(drop_kind);
+            if drop_kind == 0 { // pawn
+                self.pawn_checker[self.color as usize][mv.to_j() as usize] = false;
+            }
+            // weight
+            self.weight += KIND_TO_WEIGHT[drop_kind as usize] / 10;
+            // hash
+            self.hash_key = self.hash_key.wrapping_add(HAND_HASH[self.color as usize][drop_kind]);
+        } else {
+            let captured_piece;
+            unsafe {
+                captured_piece = PAST_CAPTURED_PIECES[self.nth as usize];
+            }
+            // capture
+            if captured_piece != 0 {
+                let captured_kind = get_kind(captured_piece);
+                self.board[mv.to_i() as usize][mv.to_j() as usize] = captured_piece;
+                self.hand[self.color as usize].sub(captured_kind);
+                if captured_piece == 1 || captured_piece == 15 { // pawn
+                    self.pawn_checker[!self.color as usize][mv.to_j() as usize] = true;
+                }
+                // weight
+                self.weight -= PIECE_TO_WEIGHT[captured_piece as usize];
+                self.weight -= KIND_TO_WEIGHT[captured_kind];
+                // hash
+                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[captured_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+                self.hash_key = self.hash_key.wrapping_sub(HAND_HASH[self.color as usize][captured_kind]);
+            } else {
+                self.board[mv.to_i() as usize][mv.to_j() as usize] = 0;
+            }
+
+            if mv.is_promote() {
+                let demoted_piece = demote(to_piece);
+                self.board[mv.from_i() as usize][mv.from_j() as usize] = demoted_piece;
+                if demoted_piece == 1 || demoted_piece == 15 { // pawn
+                    self.pawn_checker[self.color as usize][mv.to_j() as usize] = true;
+                }
+                // weight
+                self.weight -= PIECE_TO_WEIGHT[to_piece as usize];
+                self.weight += PIECE_TO_WEIGHT[demoted_piece as usize];
+                // hash
+                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[demoted_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
+            } else {
+                // hash
+                self.board[mv.from_i() as usize][mv.from_j() as usize] = to_piece;
+                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[to_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
+            }
+        }
+        // hash
+        self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[to_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
     }
 
     pub fn legal_move(&self) -> Vec<Move> {

@@ -26,6 +26,13 @@ pub fn whose(piece: u8) -> Color {
 pub fn promote(piece: u8) -> u8 {
     piece + 6
 }
+pub fn demote(piece: u8) -> u8 {
+    if (7 <= piece && piece <= 12) || (21 <= piece && piece <= 26) {
+        piece - 6
+    } else {
+        piece
+    }
+}
 
 pub fn get_kind(piece: u8) -> usize {
     match piece {

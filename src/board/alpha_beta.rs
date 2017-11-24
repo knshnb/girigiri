@@ -6,7 +6,7 @@ use board::state::*;
 use board::eval::*;
 use board::hash::*;
 
-pub fn sub_search(ref mut state: &State, depth: u8, alpha: i32, beta: i32) -> (i32, Move) {
+pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -> (i32, Move) {
     let mut first_move = NULL_MOVE;
     let mut entry;
     unsafe {
@@ -37,9 +37,9 @@ pub fn sub_search(ref mut state: &State, depth: u8, alpha: i32, beta: i32) -> (i
         }
         best_pair = (-(i32::max_value()), NULL_MOVE);
         for mv in moves {
-            let mut new_state = state.clone();
-            new_state.apply_move(&mv);
-            let new_pair = sub_search(&new_state, depth - 1, -beta, -cmp::max(alpha, best_pair.0));
+            state.apply_move(&mv);
+            let new_pair = sub_search(state, depth - 1, -beta, -cmp::max(alpha, best_pair.0));
+            state.undo_move(&mv);
             let new_pair = (-new_pair.0, new_pair.1);
             if new_pair.0 > best_pair.0 {
                 best_pair = (new_pair.0, mv);
@@ -61,6 +61,6 @@ pub fn sub_search(ref mut state: &State, depth: u8, alpha: i32, beta: i32) -> (i
     }
     best_pair
 }
-pub fn search(ref mut state: &State, depth: u8) -> (i32, Move) {
-    sub_search(&state, depth, -(i32::max_value()), i32::max_value())
+pub fn search(ref mut state: &mut State, depth: u8) -> (i32, Move) {
+    sub_search(state, depth, -(i32::max_value()), i32::max_value())
 }

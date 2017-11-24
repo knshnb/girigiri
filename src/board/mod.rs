@@ -6,3 +6,4 @@ pub mod alpha_beta;
 pub mod eval;
 pub mod hand;
 pub mod hash;
+pub mod past_captured_piece;
