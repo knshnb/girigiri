@@ -1,5 +1,4 @@
 use board::state::*;
-use board::helper::*;
 
 pub const PIECE_TO_WEIGHT: [i32; 29] = [
     // black

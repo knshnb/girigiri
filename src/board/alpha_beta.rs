@@ -3,7 +3,7 @@ use std::cmp;
 
 use board::move_encode::*;
 use board::state::*;
-use board::eval::*;
+use board::static_search::*;
 use board::hash::*;
 
 pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -> (i32, Move) {
@@ -22,7 +22,7 @@ pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -
 
     let mut best_pair;
     if depth == 0 {
-        best_pair = (eval(&state), NULL_MOVE)
+        best_pair = (static_search(state), NULL_MOVE)
     } else {
         let mut moves = state.legal_move();
         if first_move != NULL_MOVE {
