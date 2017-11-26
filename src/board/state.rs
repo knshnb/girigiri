@@ -7,6 +7,7 @@ use board::hash::*;
 use board::eval::*;
 use board::past_captured_piece::*;
 
+#[derive(Clone, Debug)]
 pub struct State {
     pub nth: u16,
     pub color: bool,                    // true: black, false: white
@@ -106,6 +107,18 @@ impl State {
             mv.is_promote() && self.board[mv.from_i() as usize][mv.from_j() as usize] == 1
         } else {
             mv.is_promote() && self.board[mv.from_i() as usize][mv.from_j() as usize] == 15
+        }
+    }
+
+    pub fn print_expectation(&mut self, depth: u8) {
+        let mut state = self.clone();
+        for _ in 0..depth {
+            let mv;
+            unsafe {
+                mv = HASH_TABLE[(state.hash_key & HASH_KEY_MASK) as usize].best_move;
+            }
+            state.print_move(&mv);
+            state.apply_move(&mv);
         }
     }
 
