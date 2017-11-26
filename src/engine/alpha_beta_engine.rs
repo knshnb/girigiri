@@ -1,6 +1,7 @@
 use board::state::*;
 use board::alpha_beta::*;
 use board::move_encode::*;
+use board::hash::*;
 use std::time::Instant;
 
 pub struct AlphaBetaEngine {
@@ -16,17 +17,20 @@ impl AlphaBetaEngine {
     pub fn proceed_move(&mut self) {
         self.state.print();
 
-        let mut pair = (0, NULL_MOVE);
+        let mut mv = NULL_MOVE;
         for depth in 0..5 {
             let start = Instant::now();
-            pair = search(&mut self.state, depth as u8);
+            let eval = search(&mut self.state, depth as u8);
+            unsafe {
+                mv = HASH_TABLE[(self.state.hash_key & HASH_KEY_MASK) as usize].best_move;
+            }
             let end = start.elapsed();
-            println!("depth: {}, eval: {}, move: ", depth, pair.0);
-            self.state.print_move(&pair.1);
+            println!("depth: {}, eval: {}, move: ", depth, eval);
+            self.state.print_move(&mv);
             println!("time: {}.{:03} sec\n", end.as_secs(), end.subsec_nanos() / 1_000_000);
         }
 
-        self.state.apply_move(&pair.1);
+        self.state.apply_move(&mv);
     }
     pub fn is_lose(&self) -> bool {
         self.state.is_lose()

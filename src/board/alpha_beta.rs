@@ -6,7 +6,7 @@ use board::state::*;
 use board::static_search::*;
 use board::hash::*;
 
-pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -> (i32, Move) {
+pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -> i32 {
     let mut first_move = NULL_MOVE;
     let mut entry;
     unsafe {
@@ -14,15 +14,16 @@ pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -
     }
     if state.hash_key == entry.hash_key && state.color == entry.color {
         if depth <= entry.remain_depth {
-            return (entry.value, entry.best_move);
+            return entry.value;
         } else {
             first_move = entry.best_move;
         }
     }
 
-    let mut best_pair;
+    let mut best_val = -(i32::max_value());
+    let mut best_move = NULL_MOVE;
     if depth == 0 {
-        best_pair = (static_search(state), NULL_MOVE)
+        best_val = static_search(state);
     } else {
         let mut moves = state.legal_move();
         if first_move != NULL_MOVE {
@@ -35,16 +36,15 @@ pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -
                 }
             }
         }
-        best_pair = (-(i32::max_value()), NULL_MOVE);
         for mv in moves {
             state.apply_move(&mv);
-            let new_pair = sub_search(state, depth - 1, -beta, -cmp::max(alpha, best_pair.0));
+            let new_val = -sub_search(state, depth - 1, -beta, -cmp::max(alpha, best_val));
             state.undo_move(&mv);
-            let new_pair = (-new_pair.0, new_pair.1);
-            if new_pair.0 > best_pair.0 {
-                best_pair = (new_pair.0, mv);
+            if new_val > best_val{
+                best_val = new_val;
+                best_move = mv;
             }
-            if best_pair.0 >= beta {
+            if best_val >= beta {
                 break;
             }
         }
@@ -52,15 +52,15 @@ pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -
     let new_entry: HashEntry = HashEntry {
         hash_key: state.hash_key,
         color: state.color,
-        value: best_pair.0,
+        value: best_val,
         remain_depth: depth,
-        best_move: best_pair.1,
+        best_move: best_move,
     };
     unsafe {
         HASH_TABLE[(state.hash_key & HASH_KEY_MASK) as usize] = new_entry;
     }
-    best_pair
+    best_val
 }
-pub fn search(ref mut state: &mut State, depth: u8) -> (i32, Move) {
+pub fn search(ref mut state: &mut State, depth: u8) -> i32 {
     sub_search(state, depth, -(i32::max_value()), i32::max_value())
 }
