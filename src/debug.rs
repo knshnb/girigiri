@@ -50,6 +50,7 @@ fn main() {
                     mv = board::move_encode::Move::normal_encode(from_i, from_j, to_i, to_j);
                 }
             }
+            state.print_move(&mv);
             state.apply_move(&mv);
         }
     }
