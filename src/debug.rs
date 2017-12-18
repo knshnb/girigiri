@@ -3,6 +3,7 @@ extern crate lazy_static;
 
 use std::time::Instant;
 use std::io;
+use std::io::Read;
 use std::str::FromStr;
 
 mod board;
@@ -14,46 +15,42 @@ fn main() {
     let mut mv = NULL_MOVE;
     loop {
         state.print_debug();
-        println!("undo: 0, normal_move: 1, promote_move: 2, drop_move: 3");
         let mut input = String::new();
         io::stdin().read_line(&mut input)
             .expect("failed to read line");
-        let input: u32 = input.trim().parse()
-            .expect("not a number");
-        match input {
-            0 => {
-                state.print_move(&mv);
-                state.undo_move(&mv)
-            },
-            1 | 2 | 3 => {
-                println!("move = ?");
-                let mut buf = String::new();
-                io::stdin().read_line(&mut buf).ok();
-                let mut iter = buf.split_whitespace().map(|n| i8::from_str(n).unwrap());
-
-                if input == 3 {
-                    // drop
-                    let kind: u8 = iter.next().unwrap() as u8;
-                    let to_j: i8 = 9 - iter.next().unwrap();
-                    let to_i: i8 = iter.next().unwrap() - 1;
-                    mv = board::move_encode::Move::drop_encode(kind, to_i, to_j);
-                } else {
-                    // not drop
-                    let from_j: i8 = 9 - iter.next().unwrap();
-                    let from_i: i8 = iter.next().unwrap() - 1;
-                    let to_j: i8 = 9 - iter.next().unwrap();
-                    let to_i: i8 = iter.next().unwrap() - 1;
-                    if input == 1 { 
-                        // normal
-                        mv = board::move_encode::Move::normal_encode(from_i, from_j, to_i, to_j);
-                    } else if input == 2 {
-                        // promote
-                        mv = board::move_encode::Move::promote_encode(from_i, from_j, to_i, to_j);
-                    }
+        if input.len() == 2 {
+            // undo
+            state.print_move(&mv);
+            state.undo_move(&mv);
+        } else {
+            let to_j: i8 = 9 - (input.chars().nth(2).unwrap().to_digit(10).unwrap() as i8);
+            let to_i: i8 = input.chars().nth(3).unwrap() as i8 - 'a' as i8;
+            if input.chars().nth(1) == Some('*') {
+                // drop
+                let kind = match input.chars().nth(0).unwrap() {
+                    'K' => 7,
+                    'G' => 6,
+                    'R' => 5,
+                    'B' => 4,
+                    'S' => 3,
+                    'N' => 2,
+                    'L' => 1,
+                    'P' => 0,
+                    _ => 7,
+                };
+                mv = board::move_encode::Move::drop_encode(kind, to_i, to_j);
+            } else {
+                let from_j: i8 = 9 - (input.chars().nth(0).unwrap().to_digit(10).unwrap() as i8);
+                let from_i: i8 = input.chars().nth(1).unwrap() as i8 - 'a' as i8;
+                if input.len() == 6 {
+                    // promote
+                    mv = board::move_encode::Move::promote_encode(from_i, from_j, to_i, to_j);
+                } else if input.len() == 5 {
+                    // normal
+                    mv = board::move_encode::Move::normal_encode(from_i, from_j, to_i, to_j);
                 }
-                state.apply_move(&mv);
-            },
-            _ => println!("invalid input"),
+            }
+            state.apply_move(&mv);
         }
     }
 }
