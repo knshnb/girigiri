@@ -22,3 +22,6 @@ Shogi AI written in Rust
     ```
     $ cargo run --bin debug --release
     ```
+
+## Introduction
+[Rustで将棋AI入門 1-動かしてみる](https://qiita.com/bknshn/items/a989f223aa022c0c9c2a)
