@@ -1,6 +1,7 @@
+use board::color::*;
 use board::state::*;
 use board::move_encode::*;
-use board::helper::*;
+use board::piece::*;
 use board::rules::MOVABLES;
 
 impl State {

@@ -1,6 +1,7 @@
+pub mod color;
 pub mod state;
 pub mod legal_move;
-pub mod helper;
+pub mod piece;
 pub mod move_encode;
 pub mod rules;
 pub mod alpha_beta;

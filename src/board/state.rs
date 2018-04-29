@@ -1,7 +1,8 @@
 use std::str;
 
+use board::color::*;
 use board::move_encode::*;
-use board::helper::*;
+use board::piece::*;
 use board::hand::*;
 use board::hash::*;
 use board::eval::*;
