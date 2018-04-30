@@ -27,9 +27,9 @@ pub const HASH_KEY_MASK: u64 = 0b1111111111111111;
 pub static mut HASH_TABLE: [HashEntry; HASH_TABLE_SIZE] = [HASH_ENTRY_NONE; HASH_TABLE_SIZE];
 
 lazy_static! {
-    pub static ref BOARD_HASH: [[[u64; 9]; 9]; 29] = {
-        let mut m: [[[u64; 9]; 9]; 29] = [[[0; 9]; 9]; 29];
-        for piece in 0..29 {
+    pub static ref BOARD_HASH: [[[u64; 9]; 9]; 32] = {
+        let mut m: [[[u64; 9]; 9]; 32] = [[[0; 9]; 9]; 32];
+        for piece in 0..32 {
             for i in 0..9 {
                 for j in 0..9 {
                     m[piece][i][j] = rand::thread_rng().gen_range(0, u64::max_value());

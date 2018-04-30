@@ -12,11 +12,11 @@ impl State {
                 for from_j in 0..9 {
                     match self.board[from_i][from_j] {
                         // normal move
-                        1 =>
+                        Piece::Pawn =>
                             for &(diff_i, diff_j) in MOVABLES.pawn_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     if to_i <= 2 {
                                         // always promote when possible
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -25,11 +25,11 @@ impl State {
                                     }
                                 }
                             }
-                        3 =>
+                        Piece::Knight =>
                             for &(diff_i, diff_j) in MOVABLES.knight_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     if to_i <= 2 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -40,11 +40,11 @@ impl State {
                                     }
                                 }
                             }
-                        4 =>
+                        Piece::Silver =>
                             for &(diff_i, diff_j) in MOVABLES.silver_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     if to_i <= 2 || from_i <= 2 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -52,30 +52,30 @@ impl State {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
-                        7 | 8 | 9 | 10 | 13 =>
+                        Piece::Propawn | Piece::Prolance | Piece::Proknight | Piece::Prosilver | Piece::Gold =>
                             for &(diff_i, diff_j) in MOVABLES.gold_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
-                        14 =>
+                        Piece::King =>
                             for &(diff_i, diff_j) in MOVABLES.king_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         // long move
-                        2 =>
+                        Piece::Lance =>
                             for &(diff_i, diff_j) in MOVABLES.lance_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
                                 if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                 else {
-                                    match whose(self.board[to_i as usize][to_j as usize]) {
+                                    match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                         Color::Black => break,
                                         Color::White => {
                                             if to_i <= 2 {
@@ -101,14 +101,14 @@ impl State {
                                     }
                                 }
                             }
-                        5 => // bishop
+                        Piece::Bishop => // bishop
                             for &bishop_line in MOVABLES.bishop_black.iter() {
                                 for &(diff_i, diff_j) in bishop_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::Black => break,
                                             Color::White => {
                                                 if to_i <= 2 || from_i <= 2 {
@@ -131,14 +131,14 @@ impl State {
                                     }
                                 }
                             }
-                        6 => // rook
+                        Piece::Rook => // rook
                             for &rook_line in MOVABLES.rook_black.iter() {
                                 for &(diff_i, diff_j) in rook_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::Black => break,
                                             Color::White => {
                                                 if to_i <= 2 || from_i <= 2 {
@@ -161,7 +161,7 @@ impl State {
                                     }
                                 }
                             }
-                        11 => // horse
+                        Piece::Horse => // horse
                             // long move
                         {
                             for &bishop_line in MOVABLES.bishop_black.iter() {
@@ -170,7 +170,7 @@ impl State {
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::Black => break,
                                             Color::White => {
                                                 moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -187,12 +187,12 @@ impl State {
                             for &(diff_i, diff_j) in MOVABLES.normal_horse_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         }
-                        12 => // dragon
+                        Piece::Dragon => // dragon
                             // long move
                         {
                             for &rook_line in MOVABLES.rook_black.iter() {
@@ -201,7 +201,7 @@ impl State {
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::Black => break,
                                             Color::White => {
                                                 moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -218,7 +218,7 @@ impl State {
                             for &(diff_i, diff_j) in MOVABLES.normal_dragon_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
@@ -232,11 +232,11 @@ impl State {
                 for from_j in 0..9 {
                     match self.board[from_i][from_j] {
                         // normal move
-                        15 =>
+                        Piece::pawn =>
                             for &(diff_i, diff_j) in MOVABLES.pawn_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     if to_i >= 6 {
                                         // always promote when possible
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -245,11 +245,11 @@ impl State {
                                     }
                                 }
                             }
-                        17 =>
+                        Piece::knight =>
                             for &(diff_i, diff_j) in MOVABLES.knight_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     if to_i >= 6 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -260,11 +260,11 @@ impl State {
                                     }
                                 }
                             }
-                        18 =>
+                        Piece::silver =>
                             for &(diff_i, diff_j) in MOVABLES.silver_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     if to_i >= 6 || from_i >= 6 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -272,30 +272,30 @@ impl State {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
-                        21 | 22 | 23 | 24 | 27 =>
+                        Piece::propawn | Piece::prolance | Piece::proknight | Piece::prosilver | Piece::gold =>
                             for &(diff_i, diff_j) in MOVABLES.gold_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
-                        28 =>
+                        Piece::king =>
                             for &(diff_i, diff_j) in MOVABLES.king_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         // long move
-                        16 =>
+                        Piece::lance =>
                             for &(diff_i, diff_j) in MOVABLES.lance_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
                                 if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                 else {
-                                    match whose(self.board[to_i as usize][to_j as usize]) {
+                                    match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                         Color::White => break,
                                         Color::Black => {
                                             if to_i >= 6 {
@@ -321,14 +321,14 @@ impl State {
                                     }
                                 }
                             }
-                        19 => // bishop
+                        Piece::bishop => // bishop
                             for &bishop_line in MOVABLES.bishop_white.iter() {
                                 for &(diff_i, diff_j) in bishop_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::White => break,
                                             Color::Black => {
                                                 if to_i >= 6 || from_i >= 6 {
@@ -351,14 +351,14 @@ impl State {
                                     }
                                 }
                             }
-                        20 => // rook
+                        Piece::rook => // rook
                             for &rook_line in MOVABLES.rook_white.iter() {
                                 for &(diff_i, diff_j) in rook_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::White => break,
                                             Color::Black => {
                                                 if to_i >= 6 || from_i >= 6 {
@@ -381,7 +381,7 @@ impl State {
                                     }
                                 }
                             }
-                        25 => // horse
+                        Piece::horse => // horse
                             // long move
                         {
                             for &bishop_line in MOVABLES.bishop_white.iter() {
@@ -390,7 +390,7 @@ impl State {
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::White => break,
                                             Color::Black => {
                                                 moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -407,12 +407,12 @@ impl State {
                             for &(diff_i, diff_j) in MOVABLES.normal_horse_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         }
-                        26 => // dragon
+                        Piece::dragon => // dragon
                             // long move
                         {
                             for &rook_line in MOVABLES.rook_white.iter() {
@@ -421,7 +421,7 @@ impl State {
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::White => break,
                                             Color::Black => {
                                                 moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -438,7 +438,7 @@ impl State {
                             for &(diff_i, diff_j) in MOVABLES.normal_dragon_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
@@ -462,7 +462,7 @@ impl State {
         }
         for to_i in 0..9 {
             for to_j in 0..9 {
-                if self.board[to_i][to_j] == 0 {
+                if self.board[to_i][to_j] == Piece::null {
                     for &n in &captured_kinds {
                         match n {
                             0 => if to_i >= 1 && !self.pawn_checker[self.color as usize][to_j] { moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));},
@@ -481,11 +481,11 @@ impl State {
                 for from_j in 0..9 {
                     match self.board[from_i][from_j] {
                         // normal move
-                        1 =>
+                        Piece::Pawn =>
                             for &(diff_i, diff_j) in MOVABLES.pawn_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     if to_i <= 2 {
                                         // always promote when possible
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -494,11 +494,11 @@ impl State {
                                     }
                                 }
                             }
-                        3 =>
+                        Piece::Knight =>
                             for &(diff_i, diff_j) in MOVABLES.knight_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     if to_i <= 2 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -509,11 +509,11 @@ impl State {
                                     }
                                 }
                             }
-                        4 =>
+                        Piece::Silver =>
                             for &(diff_i, diff_j) in MOVABLES.silver_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     if to_i <= 2 || from_i <= 2 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -521,30 +521,30 @@ impl State {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
-                        7 | 8 | 9 | 10 | 13 =>
+                        Piece::Propawn | Piece::Prolance | Piece::Proknight | Piece::Prosilver | Piece::Gold =>
                             for &(diff_i, diff_j) in MOVABLES.gold_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
-                        14 =>
+                        Piece::King =>
                             for &(diff_i, diff_j) in MOVABLES.king_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         // long move
-                        2 =>
+                        Piece::Lance =>
                             for &(diff_i, diff_j) in MOVABLES.lance_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
                                 if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                 else {
-                                    match whose(self.board[to_i as usize][to_j as usize]) {
+                                    match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                         Color::Black => break,
                                         Color::White => {
                                             if to_i <= 2 {
@@ -570,14 +570,14 @@ impl State {
                                     }
                                 }
                             }
-                        5 => // bishop
+                        Piece::Bishop => // bishop
                             for &bishop_line in MOVABLES.bishop_black.iter() {
                                 for &(diff_i, diff_j) in bishop_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::Black => break,
                                             Color::White => {
                                                 if to_i <= 2 || from_i <= 2 {
@@ -600,14 +600,14 @@ impl State {
                                     }
                                 }
                             }
-                        6 => // rook
+                        Piece::Rook => // rook
                             for &rook_line in MOVABLES.rook_black.iter() {
                                 for &(diff_i, diff_j) in rook_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::Black => break,
                                             Color::White => {
                                                 if to_i <= 2 || from_i <= 2 {
@@ -630,7 +630,7 @@ impl State {
                                     }
                                 }
                             }
-                        11 => // horse
+                        Piece::Horse => // horse
                             // long move
                         {
                             for &bishop_line in MOVABLES.bishop_black.iter() {
@@ -639,7 +639,7 @@ impl State {
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::Black => break,
                                             Color::White => {
                                                 moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -656,12 +656,12 @@ impl State {
                             for &(diff_i, diff_j) in MOVABLES.normal_horse_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         }
-                        12 => // dragon
+                        Piece::Dragon => // dragon
                             // long move
                         {
                             for &rook_line in MOVABLES.rook_black.iter() {
@@ -670,7 +670,7 @@ impl State {
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::Black => break,
                                             Color::White => {
                                                 moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -687,7 +687,7 @@ impl State {
                             for &(diff_i, diff_j) in MOVABLES.normal_dragon_black.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::Black {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
@@ -701,11 +701,11 @@ impl State {
                 for from_j in 0..9 {
                     match self.board[from_i][from_j] {
                         // normal move
-                        15 =>
+                        Piece::pawn =>
                             for &(diff_i, diff_j) in MOVABLES.pawn_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     if to_i >= 6 {
                                         // always promote when possible
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -714,11 +714,11 @@ impl State {
                                     }
                                 }
                             }
-                        17 =>
+                        Piece::knight =>
                             for &(diff_i, diff_j) in MOVABLES.knight_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     if to_i >= 6 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -729,11 +729,11 @@ impl State {
                                     }
                                 }
                             }
-                        18 =>
+                        Piece::silver =>
                             for &(diff_i, diff_j) in MOVABLES.silver_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     if to_i >= 6 || from_i >= 6 {
                                         // can promote
                                         moves.push(Move::promote_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -741,30 +741,30 @@ impl State {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
-                        21 | 22 | 23 | 24 | 27 =>
+                        Piece::propawn | Piece::prolance | Piece::proknight | Piece::prosilver | Piece::gold =>
                             for &(diff_i, diff_j) in MOVABLES.gold_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
-                        28 =>
+                        Piece::king =>
                             for &(diff_i, diff_j) in MOVABLES.king_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         // long move
-                        16 =>
+                        Piece::lance =>
                             for &(diff_i, diff_j) in MOVABLES.lance_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
                                 if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                 else {
-                                    match whose(self.board[to_i as usize][to_j as usize]) {
+                                    match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                         Color::White => break,
                                         Color::Black => {
                                             if to_i >= 6 {
@@ -790,14 +790,14 @@ impl State {
                                     }
                                 }
                             }
-                        19 => // bishop
+                        Piece::bishop => // bishop
                             for &bishop_line in MOVABLES.bishop_white.iter() {
                                 for &(diff_i, diff_j) in bishop_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::White => break,
                                             Color::Black => {
                                                 if to_i >= 6 || from_i >= 6 {
@@ -820,14 +820,14 @@ impl State {
                                     }
                                 }
                             }
-                        20 => // rook
+                        Piece::rook => // rook
                             for &rook_line in MOVABLES.rook_white.iter() {
                                 for &(diff_i, diff_j) in rook_line.iter() {
                                     let to_i = (from_i as i8) + diff_i;
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::White => break,
                                             Color::Black => {
                                                 if to_i >= 6 || from_i >= 6 {
@@ -850,7 +850,7 @@ impl State {
                                     }
                                 }
                             }
-                        25 => // horse
+                        Piece::horse => // horse
                             // long move
                         {
                             for &bishop_line in MOVABLES.bishop_white.iter() {
@@ -859,7 +859,7 @@ impl State {
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::White => break,
                                             Color::Black => {
                                                 moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -876,12 +876,12 @@ impl State {
                             for &(diff_i, diff_j) in MOVABLES.normal_horse_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }
                         }
-                        26 => // dragon
+                        Piece::dragon => // dragon
                             // long move
                         {
                             for &rook_line in MOVABLES.rook_white.iter() {
@@ -890,7 +890,7 @@ impl State {
                                     let to_j = (from_j as i8) + diff_j;
                                     if to_i < 0 || 8 < to_i || to_j < 0 || 8 < to_j { break; }
                                     else {
-                                        match whose(self.board[to_i as usize][to_j as usize]) {
+                                        match Piece::whose(self.board[to_i as usize][to_j as usize]) {
                                             Color::White => break,
                                             Color::Black => {
                                                 moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
@@ -907,7 +907,7 @@ impl State {
                             for &(diff_i, diff_j) in MOVABLES.normal_dragon_white.iter() {
                                 let to_i = (from_i as i8) + diff_i;
                                 let to_j = (from_j as i8) + diff_j;
-                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && whose(self.board[to_i as usize][to_j as usize]) != Color::White {
+                                if 0 <= to_i && to_i <= 8 && 0 <= to_j && to_j <= 8 && Piece::whose(self.board[to_i as usize][to_j as usize]) != Color::White {
                                     moves.push(Move::normal_encode(from_i as i8, from_j as i8, to_i, to_j));
                                 }
                             }

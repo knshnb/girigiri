@@ -1,160 +1,159 @@
 use board::color::*;
+use std::fmt;
 
-pub fn piece_to_english(piece: u8) -> &'static str {
-    match piece {
-        0   => "null",
+// [is_black, is_promoted, kind(3 bits)]
+const BLACK_MASK: isize = 0b10000;
+const PROMOTED_MASK: isize = 0b01000;
+const KIND_MASK: isize = 0b00111;
 
-        // black's pieces
-        1   => "Pawn",
-        2   => "Lance",
-        3   => "Knight",
-        4   => "Silver",
-        5   => "Bishop",
-        6   => "Rook",
+#[allow(non_camel_case_types, dead_code)]
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub enum Piece {
+    // black's pieces
+    Pawn = 0 | BLACK_MASK,
+    Propawn = 0 | PROMOTED_MASK | BLACK_MASK,
+    Lance = 1 | BLACK_MASK,
+    Prolance = 1 | PROMOTED_MASK | BLACK_MASK,
+    Knight = 2 | BLACK_MASK,
+    Proknight = 2 | PROMOTED_MASK | BLACK_MASK,
+    Silver = 3 | BLACK_MASK,
+    Prosilver = 3 | PROMOTED_MASK | BLACK_MASK,
+    Bishop = 4 | BLACK_MASK,
+    Horse = 4 | PROMOTED_MASK | BLACK_MASK,
+    Rook = 5 | BLACK_MASK,
+    Dragon = 5 | PROMOTED_MASK | BLACK_MASK,
+    Gold = 6 | BLACK_MASK,
+    King = 7 | BLACK_MASK,
 
-        7   => "Propawn",
-        8   => "Prolance",
-        9   => "Pronight",
-        10  => "Prosilver",
-        11  => "Horse",
-        12  => "Dragon",
+    // white's pieces
+    pawn = 0,
+    propawn = 0 | PROMOTED_MASK,
+    lance = 1,
+    prolance = 1 | PROMOTED_MASK,
+    knight = 2,
+    proknight = 2 | PROMOTED_MASK,
+    silver = 3,
+    prosilver = 3 | PROMOTED_MASK,
+    bishop = 4,
+    horse = 4 | PROMOTED_MASK,
+    rook = 5,
+    dragon = 5 | PROMOTED_MASK,
+    gold = 6,
+    king = 7,
 
-        13  => "Gold",
-        14  => "King",
+    null = 7 | PROMOTED_MASK, // in order to keep kind within 3 bits
+}
 
-        // white's pieces
-        15  => "pawn",
-        16  => "lance",
-        17  => "knight",
-        18  => "silver",
-        19  => "bishop",
-        20  => "rook",
-
-        21  => "propawn",
-        22  => "prolance",
-        23  => "pronight",
-        24  => "prosilver",
-        25  => "horse",
-        26  => "dragon",
-
-        27  => "gold",
-        28  => "king",
-
-        _   => "not a piece",
+impl Piece {
+    fn to_piece(x: isize) -> Piece {
+        unsafe {
+            ::std::mem::transmute::<u8, Piece>(x as u8)
+        }
     }
-}
 
-pub fn piece_to_japanese(piece : u8) -> &'static str {
-    match piece {
-        0   => " 口",
-
-        // black's pieces
-        1   => " 歩",
-        2   => " 香",
-        3   => " 桂",
-        4   => " 銀",
-        5   => " 角",
-        6   => " 飛",
-
-        7   => " と",
-        8   => " 杏",
-        9   => " 圭",
-        10  => " 全",
-        11  => " 馬",
-        12  => " 龍",
-
-        13  => " 金",
-        14  => " 王",
-
-        // white's pieces
-        15  => "^歩",
-        16  => "^香",
-        17  => "^桂",
-        18  => "^銀",
-        19  => "^角",
-        20  => "^飛",
-
-        21  => "^と",
-        22  => "^杏",
-        23  => "^圭",
-        24  => "^全",
-        25  => "^馬",
-        26  => "^龍",
-
-        27  => "^金",
-        28  => "^王",
-
-        _   => "not a piece",
+    pub fn new(kind: usize, is_black: bool) -> Piece {
+        let x = if is_black {
+            kind as isize | BLACK_MASK
+        } else {
+            kind as isize
+        };
+        Piece::to_piece(x)
     }
-}
 
-pub fn whose(piece: u8) -> Color {
-    if piece == 0 {
-        Color::Null
-    } else if piece <= 14 {
-        Color::Black
-    } else {
-        Color::White
+    pub fn whose(self) -> Color {
+        if self == Piece::null {
+            Color::Null
+        } else if (self as isize) & BLACK_MASK == BLACK_MASK {
+            Color::Black
+        } else {
+            Color::White
+        }
     }
-}
 
-pub fn promote(piece: u8) -> u8 {
-    piece + 6
-}
-pub fn demote(piece: u8) -> u8 {
-    if (7 <= piece && piece <= 12) || (21 <= piece && piece <= 26) {
-        piece - 6
-    } else {
-        piece
+    fn to_white(self) -> Piece {
+        Piece::to_piece((self as isize) & !BLACK_MASK)
     }
-}
 
-pub fn get_kind(piece: u8) -> usize {
-    match piece {
-        1 | 15 | 7 | 21 => 0, // pawn
-        2 | 16 | 8 | 22 => 1, // lance
-        3 | 17 | 9 | 23 => 2, // knight
-        4 | 18 | 10 | 24 => 3, // silver
-        5 | 19 | 11 | 25 => 4, // bishop
-        6 | 20 | 12 | 26 => 5, // rook
-        13 | 27 => 6, // gold
-        14 | 28 => 7, // king
-        0 | _ => {
-            println!("Err null piece!");
-            100
+    pub fn promote(self) -> Piece {
+        Piece::to_piece((self as isize) | PROMOTED_MASK)
+    }
+
+    pub fn demote(self) -> Piece {
+        Piece::to_piece((self as isize) & !PROMOTED_MASK)
+    }
+
+
+    pub fn kind(self) -> usize {
+        ((self as isize) & KIND_MASK) as usize
+    }
+
+    pub fn kind_to_str(kind: usize) -> &'static str {
+        match kind {
+            0   => " 歩",
+            1   => " 香",
+            2   => " 桂",
+            3   => " 銀",
+            4   => " 角",
+            5   => " 飛",
+            6   => " 金",
+            7   => " 王",
+            _   => " なし",
         }
     }
 }
-pub fn kind_to_japanese(kind: usize) -> &'static str {
-    match kind {
-        0   => " 歩",
-        1   => " 香",
-        2   => " 桂",
-        3   => " 銀",
-        4   => " 角",
-        5   => " 飛",
-        6   => " 金",
-        7   => " 王",
-        _   => " なし",
+
+impl fmt::Display for Piece {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.to_white() {
+            Piece::null   => "口",
+            Piece::pawn   => "歩",
+            Piece::lance   => "香",
+            Piece::knight   => "桂",
+            Piece::silver   => "銀",
+            Piece::bishop   => "角",
+            Piece::rook   => "飛",
+            Piece::propawn   => "と",
+            Piece::prolance   => "杏",
+            Piece::proknight   => "圭",
+            Piece::prosilver  => "全",
+            Piece::horse  => "馬",
+            Piece::dragon  => "龍",
+            Piece::gold  => "金",
+            Piece::king  => "王",
+            _ => "not a piece",
+        };
+        let prefix = match self.whose() {
+            Color::Null | Color::Black => " ",
+            Color::White => "^",
+        };
+        write!(f, "{}{}", prefix, name)
     }
 }
 
-pub fn kind_to_piece(kind: usize, is_black: bool) -> u8 {
-    let black_piece = match kind {
-        0 => 1,
-        1 => 2,
-        2 => 3,
-        3 => 4,
-        4 => 5,
-        5 => 6,
-        6 => 13,
-        7 => 14,
-        _ => {
-            println!("Err not a kind");
-            0
-        }
-    };
-    if !is_black { black_piece + 14 }
-    else { black_piece }
+impl fmt::Debug for Piece {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let name = match self.to_white() {
+            Piece::null   => "口",
+            Piece::pawn   => "歩",
+            Piece::lance   => "香",
+            Piece::knight   => "桂",
+            Piece::silver   => "銀",
+            Piece::bishop   => "角",
+            Piece::rook   => "飛",
+            Piece::propawn   => "と",
+            Piece::prolance   => "杏",
+            Piece::proknight   => "圭",
+            Piece::prosilver  => "全",
+            Piece::horse  => "馬",
+            Piece::dragon  => "龍",
+            Piece::gold  => "金",
+            Piece::king  => "王",
+            _ => "not a piece",
+        };
+        let prefix = match self.whose() {
+            Color::Null | Color::Black => " ",
+            Color::White => "^",
+        };
+        write!(f, "{}{}", prefix, name)
+    }
 }
-

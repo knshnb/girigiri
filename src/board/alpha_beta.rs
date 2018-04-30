@@ -8,7 +8,7 @@ use board::hash::*;
 
 pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -> i32 {
     let mut first_move = NULL_MOVE;
-    let mut entry;
+    let entry;
     unsafe {
         entry = HASH_TABLE[(state.hash_key & HASH_KEY_MASK) as usize];
     }
@@ -61,6 +61,7 @@ pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -
     }
     best_val
 }
+
 pub fn search(ref mut state: &mut State, depth: u8) -> i32 {
     sub_search(state, depth, -(i32::max_value()), i32::max_value())
 }
