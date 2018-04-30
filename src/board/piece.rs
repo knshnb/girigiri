@@ -68,7 +68,7 @@ impl Piece {
         }
     }
 
-    fn to_white(self) -> Piece {
+    pub fn to_white(self) -> Piece {
         Piece::to_piece((self as isize) & !BLACK_MASK)
     }
 
@@ -129,28 +129,6 @@ impl fmt::Display for Piece {
 
 impl fmt::Debug for Piece {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self.to_white() {
-            Piece::null => "口",
-            Piece::pawn => "歩",
-            Piece::lance => "香",
-            Piece::knight => "桂",
-            Piece::silver => "銀",
-            Piece::bishop => "角",
-            Piece::rook => "飛",
-            Piece::propawn => "と",
-            Piece::prolance => "杏",
-            Piece::proknight => "圭",
-            Piece::prosilver => "全",
-            Piece::horse => "馬",
-            Piece::dragon => "龍",
-            Piece::gold => "金",
-            Piece::king => "王",
-            _ => "not a piece",
-        };
-        let prefix = match self.whose() {
-            Color::Null | Color::Black => " ",
-            Color::White => "^",
-        };
-        write!(f, "{}{}", prefix, name)
+        write!(f, "{}", self)
     }
 }

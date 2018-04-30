@@ -225,63 +225,62 @@ impl State {
 
 impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let e = writeln!(f, "{}th", self.nth);
-        writeln!(f, "color: {}", if self.color { "black" } else { "white" });
+        writeln!(f, "{}th", self.nth)?;
+        writeln!(f, "color: {}", if self.color { "black" } else { "white" })?;
         for row in self.board.iter() {
             for p in row.iter() {
-                write!(f, "{}", p);
+                write!(f, "{}", p)?;
             }
-            writeln!(f, "");
+            writeln!(f, "")?;
         }
-        write!(f, "先手の持駒: ");
+        write!(f, "先手の持駒: ")?;
         for n in 0..8 {
             for _ in 0..self.hand[1].get_num(n) {
-                write!(f, "{}", Piece::kind_to_str(n));
+                write!(f, "{}", Piece::kind_to_str(n))?;
             }
         }
-        writeln!(f, "");
-        write!(f, "後手の持駒: ");
+        writeln!(f, "")?;
+        write!(f, "後手の持駒: ")?;
         for n in 0..8 {
             for _ in 0..self.hand[0].get_num(n) {
-                write!(f, "{}", Piece::kind_to_str(n));
+                write!(f, "{}", Piece::kind_to_str(n))?;
             }
         }
-        writeln!(f, "");
-        e
+        writeln!(f, "")?;
+        Ok(())
     }
 }
 
 impl fmt::Debug for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let e = write!(f, "{}", self);
-        writeln!(f, "hash key: {}", self.hash_key);
-        writeln!(f, "weight: {}", self.weight);
-        writeln!(f, "black's pawn checker: {:?}", self.pawn_checker[1]);
-        writeln!(f, "white's pawn checker: {:?}", self.pawn_checker[0]);
+        write!(f, "{}", self)?;
+        writeln!(f, "hash key: {}", self.hash_key)?;
+        writeln!(f, "weight: {}", self.weight)?;
+        writeln!(f, "black's pawn checker: {:?}", self.pawn_checker[1])?;
+        writeln!(f, "white's pawn checker: {:?}", self.pawn_checker[0])?;
         let legal_moves = self.legal_move();
-        writeln!(f, "legal move: {}", legal_moves.len());
+        writeln!(f, "legal move: {}", legal_moves.len())?;
 
         for mv in legal_moves {
             if self.color {
-                write!(f, "▲");
+                write!(f, "▲")?;
             } else {
-                write!(f, "△");
+                write!(f, "△")?;
             }
-            write!(f, "{}{}", 9 - mv.to_j(), 1 + mv.to_i());
+            write!(f, "{}{}", 9 - mv.to_j(), 1 + mv.to_i())?;
             if mv.is_drop() {
-                write!(f, "{}打", Piece::new(mv.drop_kind(), self.color));
+                write!(f, "{}打", Piece::new(mv.drop_kind(), self.color))?;
             } else {
                 write!(
                     f,
                     "{}",
                     self.board[mv.from_i() as usize][mv.from_j() as usize]
-                );
+                )?;
                 if mv.is_promote() {
-                    write!(f, "成");
+                    write!(f, "成")?;
                 }
             }
-            writeln!(f, "");
         }
-        e
+        Ok(())
     }
 }
