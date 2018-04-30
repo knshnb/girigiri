@@ -1,4 +1,8 @@
-#[derive(Copy, Clone)]
+use board::piece::*;
+use board::state::*;
+use csa::parser::*;
+
+#[derive(Debug, Copy, Clone)]
 pub struct Move {
     pub from: i8,
     pub to: i8,
@@ -20,7 +24,37 @@ impl Move {
     pub fn promote_encode(from_i: i8, from_j: i8, to_i: i8, to_j:i8) -> Move {
         Move {
             from: from_i * 9 + from_j,
-            to: (1 << 7) + to_i * 9 + to_j, 
+            to: (1 << 7) + to_i * 9 + to_j,
+        }
+    }
+
+    pub fn from_csa(cmd: &str, state: &State) -> Move {
+        let cmd_as_bytes = cmd.as_bytes();
+        let to_j = b'9' - cmd_as_bytes[3];
+        let to_i = cmd_as_bytes[4] - b'1';
+        match &cmd[1..3] {
+            "00" => {
+                Move::drop_encode(csa_to_kind(&cmd[5..7]) as u8, to_i as i8, to_j as i8)
+            }
+            _ => {
+                let from_j = b'9' - cmd_as_bytes[1];
+                let from_i = cmd_as_bytes[2] - b'1';
+                if state.board[from_i as usize][from_j as usize].is_promoted() && csa_is_promoted(&cmd[5..7]) {
+                    Move::promote_encode(from_i as i8, from_j as i8, to_i as i8, to_j as i8)
+                } else {
+                    Move::normal_encode(from_i as i8, from_j as i8, to_i as i8, to_j as i8)
+                }
+            }
+        }
+    }
+
+    // without first "+" or "-" (referring to color)
+    pub fn to_csa_suffix(&self, state: &State) -> String {
+        if self.is_drop() {
+            format!("00{}{}{}", 9 - self.to_j(), self.to_i() + 1, Piece::kind_to_csa(self.drop_kind()))
+        } else {
+            let piece = (*state).board[self.to_i() as usize][self.to_j() as usize];
+            format!("{}{}{}{}{}", 9 - self.from_j(), self.from_i() + 1, 9 - self.to_j(), self.to_i() + 1, piece.to_csa())
         }
     }
 

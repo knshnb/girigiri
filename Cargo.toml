@@ -14,3 +14,11 @@ path = "src/auto.rs"
 [[bin]]
 name = "debug"
 path = "src/debug.rs"
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[[bin]]
+name = "main_test"
+path = "src/main_test.rs"
