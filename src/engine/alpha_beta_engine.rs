@@ -44,7 +44,7 @@ impl AlphaBetaEngine {
         // println!("PP score: {}", self.evaluator.eval(&self.state));
     }
     pub fn randomize_state(&mut self) {
-        unimplemented!()
+        self.state.randomize();
     }
     pub fn is_lose(&self) -> bool {
         self.state.is_lose()

@@ -1,10 +1,14 @@
 use board::move_encode::*;
 use board::piece::*;
+use board::color::*;
 use board::hand::*;
 use board::hash::*;
 use board::eval::*;
 use board::past_captured_piece::*;
 use std::fmt;
+
+extern crate rand;
+use self::rand::Rng;
 
 #[derive(Clone)]
 pub struct State {
@@ -37,6 +41,51 @@ impl State {
             pawn_checker: [[true; 9]; 2],
             hash_key: 0,
             weight:0,
+        }
+    }
+
+    pub fn valid(ps: &[Piece; 81]) -> bool {
+        /*
+        (1. 二歩になっていない)
+        2. 歩、香、桂が進める位置にある
+        (3. いきなり王を取れない)
+        */
+        for i in 0..9 {
+            if ps[i].kind() <= 2 && ps[i].whose() == Color::Black {
+                return false
+            }
+        }
+        for i in 72..81 {
+            if ps[i].kind() <= 2 && ps[i].whose() == Color::White {
+                return false;
+            }
+        }
+        true
+    }
+
+    pub fn randomize(&mut self) {
+        let mut ps: [Piece; 81] = [Piece::null; 81];
+        let mut rng = rand::thread_rng();
+        for i in 0..9 {
+            for j in 0..9 {
+                if i == 2 || i == 7 {
+                    // randomly add pawn and Pawn
+                    if rng.gen() {
+                        ps[9 * i + j] = self.board[i][j];
+                    } else {
+                        ps[9 * i + j] = Piece::null;
+                    }
+                } else {
+                    ps[9 * i + j] = self.board[i][j];
+                }
+            }
+        }
+        rng.shuffle(&mut ps);
+        while !State::valid(&ps) {
+            rng.shuffle(&mut ps);
+        }
+        for i in 0..81 {
+            self.board[i / 9][i % 9] = ps[i];
         }
     }
 
