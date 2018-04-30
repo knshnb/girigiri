@@ -94,6 +94,14 @@ impl Evaluator {
         }
     }
 
+    pub fn save_pps(&mut self) {
+        write_pps(&mut self.pps);
+    }
+
+    pub fn save_ppo(&mut self) {
+        write_ppo(&mut self.ppo);
+    }
+
     pub fn eval(&self, state: &State) -> f32 {
         let (mut mine, mut yours) = (Vec::new(), Vec::new());
         for i in 0..9 {
@@ -139,6 +147,7 @@ impl Evaluator {
     }
 
     pub fn update(&mut self, state: &State, pi: usize, pj: usize) {
+        // TODO: pの先手、後手を考慮していないのであとで直す
         let mut p = ((*state).board[pi][pj].to_white(), pi, pj);
         let (mut mine, mut yours) = (Vec::new(), Vec::new());
         for i in 0..9 {
