@@ -138,19 +138,27 @@ impl Evaluator {
         sum
     }
 
-    pub fn update(&mut self, ref state: State, pi: usize, pj: usize) {
-        let mut p = (state.board[pi][pj], pi, pj);
+    pub fn update(&mut self, state: &State, pi: usize, pj: usize) {
+        let mut p = ((*state).board[pi][pj].to_white(), pi, pj);
         let (mut mine, mut yours) = (Vec::new(), Vec::new());
         for i in 0..9 {
             for j in 0..9 {
-                match state.board[i][j].whose() {
+                match (*state).board[i][j].whose() {
                     Color::Black => {
-                        let dst = if state.color { &mut mine } else { &mut yours };
-                        (*dst).push((state.board[i][j].to_white(), i, j));
+                        let dst = if (*state).color {
+                            &mut mine
+                        } else {
+                            &mut yours
+                        };
+                        (*dst).push(((*state).board[i][j].to_white(), i, j));
                     }
                     Color::White => {
-                        let dst = if state.color { &mut yours } else { &mut mine };
-                        (*dst).push((state.board[i][j].to_white(), i, j));
+                        let dst = if (*state).color {
+                            &mut yours
+                        } else {
+                            &mut mine
+                        };
+                        (*dst).push(((*state).board[i][j].to_white(), i, j));
                     }
                     _ => (),
                 }

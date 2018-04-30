@@ -20,7 +20,7 @@ impl Move {
     pub fn promote_encode(from_i: i8, from_j: i8, to_i: i8, to_j: i8) -> Move {
         Move {
             from: from_i * 9 + from_j,
-            to: (1 << 7) + to_i * 9 + to_j,
+            to: (1 << 7) | (to_i * 9 + to_j),
         }
     }
 

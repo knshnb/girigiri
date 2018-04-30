@@ -38,6 +38,9 @@ impl AlphaBetaEngine {
         }
 
         self.state.apply_move(&mv);
+        let mvpos = mv.to & 0b01111111;
+        self.evaluator
+            .update(&self.state, (mvpos / 9) as usize, (mvpos % 9) as usize);
         println!("evaluator's score: {}", self.evaluator.eval(&self.state));
     }
     pub fn is_lose(&self) -> bool {
