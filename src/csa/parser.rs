@@ -11,9 +11,9 @@ pub fn csa_to_kind(koma: &str) -> usize {
         "KY" => 1,
         "KE" => 2,
         "GI" => 3,
-        "KI" => 4,
-        "KA" => 5,
-        "HI" => 6,
+        "KA" => 4,
+        "HI" => 5,
+        "KI" => 6,
         "OU" => 7,
         _ => 8,
     }
