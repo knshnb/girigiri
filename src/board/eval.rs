@@ -1,4 +1,43 @@
 use board::state::*;
+use std::fs::*;
+use std::io::*;
+
+type PPsType = [[[[i32; 9]; 9]; 14]; 14];
+type PPoType = [[[[i32; 17]; 17]; 14]; 14];
+
+pub fn read_pps() -> PPsType {
+    let mut f = File::open("pps.bin").unwrap();
+    let mut buf = [0; 9 * 9 * 14 * 14 * 4];
+    f.read_exact(&mut buf).unwrap();
+    unsafe {
+        ::std::mem::transmute::<[u8; 9 * 9 * 14 * 14 * 4], PPsType>(buf)
+    }
+}
+
+pub fn read_ppo() -> PPoType {
+    let mut f = File::open("ppo.bin").unwrap();
+    let mut buf = [0; 17 * 17 * 14 * 14 * 4];
+    f.read_exact(&mut buf).unwrap();
+    unsafe {
+        ::std::mem::transmute::<[u8; 17 * 17 * 14 * 14 * 4], PPoType>(buf)
+    }
+}
+
+pub fn write_pps(pps: &mut PPsType) {
+    let mut f = File::create("pps.bin").unwrap();
+    let pps = unsafe {
+        ::std::mem::transmute::<PPsType, [u8; 9 * 9 * 14 * 14 * 4]>(*pps)
+    };
+    f.write_all(&pps[..]).unwrap();
+}
+
+pub fn write_ppo(ppo: &mut PPoType) {
+    let mut f = File::create("ppo.bin").unwrap();
+    let ppo = unsafe {
+        ::std::mem::transmute::<PPoType, [u8; 17 * 17 * 14 * 14 * 4]>(*ppo)
+    };
+    f.write_all(&ppo[..]).unwrap();
+}
 
 pub const PIECE_TO_WEIGHT: [i32; 32] = [
     // white
@@ -49,7 +88,7 @@ pub const KIND_TO_WEIGHT: [i32; 8] = [
     439,    // gold
     15000,  // king
 ];
-    
+
 pub fn eval(ref state: &State) -> i32 {
     state.weight
 }
