@@ -9,10 +9,10 @@ use std::fmt;
 #[derive(Clone)]
 pub struct State {
     pub nth: u16,
-    pub color: bool,                    // true: black, false: white
+    pub color: bool, // true: black, false: white
     pub board: [[Piece; 9]; 9],
-    pub hand: [Hand; 2],                // hand[0]: white, hand[1]: black
-    pub pawn_checker: [[bool; 9]; 2],   // pawn_checker[0]: white, pawn_checker[1]: black
+    pub hand: [Hand; 2],              // hand[0]: white, hand[1]: black
+    pub pawn_checker: [[bool; 9]; 2], // pawn_checker[0]: white, pawn_checker[1]: black
     pub hash_key: u64,
     pub weight: i32,
 }
@@ -50,7 +50,8 @@ impl State {
 
     pub fn is_pawn_promote(&self, &mv: &Move) -> bool {
         if self.color {
-            mv.is_promote() && self.board[mv.from_i() as usize][mv.from_j() as usize] == Piece::pawn        } else {
+            mv.is_promote() && self.board[mv.from_i() as usize][mv.from_j() as usize] == Piece::pawn
+        } else {
             mv.is_promote() && self.board[mv.from_i() as usize][mv.from_j() as usize] == Piece::Pawn
         }
     }
@@ -73,14 +74,17 @@ impl State {
             let drop_piece = Piece::new(drop_kind, self.color);
             self.hand[self.color as usize].sub(drop_kind);
             self.board[mv.to_i() as usize][mv.to_j() as usize] = drop_piece;
-            if drop_kind == 0 { // pawn
+            if drop_kind == 0 {
+                // pawn
                 self.pawn_checker[self.color as usize][mv.to_j() as usize] = true;
             }
             // weight
             self.weight -= KIND_TO_WEIGHT[drop_kind as usize] / 10;
             // hash
-            self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[drop_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
-            self.hash_key = self.hash_key.wrapping_sub(HAND_HASH[self.color as usize][drop_kind]);
+            self.hash_key = self.hash_key
+                .wrapping_add(BOARD_HASH[drop_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+            self.hash_key = self.hash_key
+                .wrapping_sub(HAND_HASH[self.color as usize][drop_kind]);
         } else {
             let from_piece = self.board[mv.from_i() as usize][mv.from_j() as usize];
             self.board[mv.from_i() as usize][mv.from_j() as usize] = Piece::null;
@@ -100,8 +104,10 @@ impl State {
                 self.weight += PIECE_TO_WEIGHT[to_piece as usize];
                 self.weight += KIND_TO_WEIGHT[captured_kind];
                 // hash
-                self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[to_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
-                self.hash_key = self.hash_key.wrapping_add(HAND_HASH[self.color as usize][captured_kind]);
+                self.hash_key = self.hash_key
+                    .wrapping_sub(BOARD_HASH[to_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+                self.hash_key = self.hash_key
+                    .wrapping_add(HAND_HASH[self.color as usize][captured_kind]);
             }
 
             if mv.is_promote() {
@@ -114,14 +120,17 @@ impl State {
                 self.weight += PIECE_TO_WEIGHT[promoted_piece as usize];
                 self.weight -= PIECE_TO_WEIGHT[from_piece as usize];
                 // hash
-                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[promoted_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+                self.hash_key = self.hash_key
+                    .wrapping_add(BOARD_HASH[promoted_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
             } else {
                 // hash
                 self.board[mv.to_i() as usize][mv.to_j() as usize] = from_piece;
-                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[from_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+                self.hash_key = self.hash_key
+                    .wrapping_add(BOARD_HASH[from_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
             }
             // hash
-            self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[from_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
+            self.hash_key = self.hash_key
+                .wrapping_sub(BOARD_HASH[from_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
         }
         self.color = !self.color;
         self.weight = -self.weight;
@@ -137,13 +146,15 @@ impl State {
             let drop_kind = mv.drop_kind();
             self.board[mv.to_i() as usize][mv.to_j() as usize] = Piece::null;
             self.hand[self.color as usize].add(drop_kind);
-            if drop_kind == 0 { // pawn
+            if drop_kind == 0 {
+                // pawn
                 self.pawn_checker[self.color as usize][mv.to_j() as usize] = false;
             }
             // weight
             self.weight += KIND_TO_WEIGHT[drop_kind as usize] / 10;
             // hash
-            self.hash_key = self.hash_key.wrapping_add(HAND_HASH[self.color as usize][drop_kind]);
+            self.hash_key = self.hash_key
+                .wrapping_add(HAND_HASH[self.color as usize][drop_kind]);
         } else {
             let captured_piece;
             unsafe {
@@ -161,8 +172,10 @@ impl State {
                 self.weight -= PIECE_TO_WEIGHT[captured_piece as usize];
                 self.weight -= KIND_TO_WEIGHT[captured_kind];
                 // hash
-                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[captured_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
-                self.hash_key = self.hash_key.wrapping_sub(HAND_HASH[self.color as usize][captured_kind]);
+                self.hash_key = self.hash_key
+                    .wrapping_add(BOARD_HASH[captured_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+                self.hash_key = self.hash_key
+                    .wrapping_sub(HAND_HASH[self.color as usize][captured_kind]);
             } else {
                 self.board[mv.to_i() as usize][mv.to_j() as usize] = Piece::null;
             }
@@ -177,20 +190,26 @@ impl State {
                 self.weight -= PIECE_TO_WEIGHT[to_piece as usize];
                 self.weight += PIECE_TO_WEIGHT[demoted_piece as usize];
                 // hash
-                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[demoted_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
+                self.hash_key = self.hash_key
+                    .wrapping_add(BOARD_HASH[demoted_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
             } else {
                 // hash
                 self.board[mv.from_i() as usize][mv.from_j() as usize] = to_piece;
-                self.hash_key = self.hash_key.wrapping_add(BOARD_HASH[to_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
+                self.hash_key = self.hash_key
+                    .wrapping_add(BOARD_HASH[to_piece as usize][mv.from_i() as usize][mv.from_j() as usize]);
             }
         }
         // hash
-        self.hash_key = self.hash_key.wrapping_sub(BOARD_HASH[to_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
+        self.hash_key = self.hash_key
+            .wrapping_sub(BOARD_HASH[to_piece as usize][mv.to_i() as usize][mv.to_j() as usize]);
     }
 
     pub fn print_move(&self, mv: &Move) {
-        if self.color { print!("▲"); }
-        else { print!("△"); }
+        if self.color {
+            print!("▲");
+        } else {
+            print!("△");
+        }
         print!("{}{}", 9 - mv.to_j(), 1 + mv.to_i());
         if mv.is_drop() {
             print!("{}打", Piece::new(mv.drop_kind(), self.color));
@@ -207,7 +226,7 @@ impl State {
 impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let e = writeln!(f, "{}th", self.nth);
-        writeln!(f, "color: {}", if self.color { "black" } else { "white"});
+        writeln!(f, "color: {}", if self.color { "black" } else { "white" });
         for row in self.board.iter() {
             for p in row.iter() {
                 write!(f, "{}", p);
@@ -243,13 +262,20 @@ impl fmt::Debug for State {
         writeln!(f, "legal move: {}", legal_moves.len());
 
         for mv in legal_moves {
-            if self.color { write!(f, "▲"); }
-            else { write!(f, "△"); }
+            if self.color {
+                write!(f, "▲");
+            } else {
+                write!(f, "△");
+            }
             write!(f, "{}{}", 9 - mv.to_j(), 1 + mv.to_i());
             if mv.is_drop() {
                 write!(f, "{}打", Piece::new(mv.drop_kind(), self.color));
             } else {
-                write!(f, "{}", self.board[mv.from_i() as usize][mv.from_j() as usize]);
+                write!(
+                    f,
+                    "{}",
+                    self.board[mv.from_i() as usize][mv.from_j() as usize]
+                );
                 if mv.is_promote() {
                     write!(f, "成");
                 }

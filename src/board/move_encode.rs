@@ -5,7 +5,7 @@ pub struct Move {
 }
 
 impl Move {
-    pub fn normal_encode(from_i: i8, from_j: i8, to_i: i8, to_j:i8) -> Move {
+    pub fn normal_encode(from_i: i8, from_j: i8, to_i: i8, to_j: i8) -> Move {
         Move {
             from: from_i * 9 + from_j,
             to: to_i * 9 + to_j,
@@ -17,10 +17,10 @@ impl Move {
             to: to_i * 9 + to_j,
         }
     }
-    pub fn promote_encode(from_i: i8, from_j: i8, to_i: i8, to_j:i8) -> Move {
+    pub fn promote_encode(from_i: i8, from_j: i8, to_i: i8, to_j: i8) -> Move {
         Move {
             from: from_i * 9 + from_j,
-            to: (1 << 7) + to_i * 9 + to_j, 
+            to: (1 << 7) + to_i * 9 + to_j,
         }
     }
 
@@ -49,12 +49,9 @@ impl Move {
 }
 
 impl PartialEq for Move {
-    fn eq(&self, other:&Move) -> bool {
+    fn eq(&self, other: &Move) -> bool {
         self.from == other.from && self.to == other.to
     }
 }
 
-pub const NULL_MOVE: Move = Move {
-    from: 0,
-    to: 0,
-};
+pub const NULL_MOVE: Move = Move { from: 0, to: 0 };

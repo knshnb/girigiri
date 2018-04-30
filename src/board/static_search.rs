@@ -14,7 +14,7 @@ fn sub_static_search(ref mut state: &mut State, to_i: i8, to_j: i8) -> i32 {
     }
     best_value
 }
-    
+
 pub fn static_search(ref mut state: &mut State) -> i32 {
     let mut best_value = eval(&state);
     let moves = state.legal_move_no_drop();

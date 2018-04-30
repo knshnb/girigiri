@@ -11,7 +11,7 @@ pub struct AlphaBetaEngine {
 impl AlphaBetaEngine {
     pub fn new() -> AlphaBetaEngine {
         AlphaBetaEngine {
-            state: State::new()
+            state: State::new(),
         }
     }
     pub fn proceed_move(&mut self) {
@@ -27,7 +27,11 @@ impl AlphaBetaEngine {
             let end = start.elapsed();
             println!("depth: {}, eval: {}, move: ", depth, eval);
             self.state.print_expectation(depth);
-            println!("time: {}.{:03} sec\n", end.as_secs(), end.subsec_nanos() / 1_000_000);
+            println!(
+                "time: {}.{:03} sec\n",
+                end.as_secs(),
+                end.subsec_nanos() / 1_000_000
+            );
         }
 
         self.state.apply_move(&mv);

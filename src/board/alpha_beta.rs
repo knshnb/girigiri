@@ -40,7 +40,7 @@ pub fn sub_search(ref mut state: &mut State, depth: u8, alpha: i32, beta: i32) -
             state.apply_move(&mv);
             let new_val = -sub_search(state, depth - 1, -beta, -cmp::max(alpha, best_val));
             state.undo_move(&mv);
-            if new_val > best_val{
+            if new_val > best_val {
                 best_val = new_val;
                 best_move = mv;
             }
