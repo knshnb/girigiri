@@ -1,13 +1,10 @@
 #[macro_use]
 extern crate lazy_static;
 
-use std::time::Instant;
 use std::io;
-use std::io::Read;
-use std::str::FromStr;
 
 mod board;
-use board::state::*;
+use board::state::State;
 use board::move_encode::*;
 
 fn main() {

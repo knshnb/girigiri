@@ -11,7 +11,7 @@ impl FirstEngine {
         }
     }
     pub fn proceed_move(&mut self) {
-        self.state.print();
+        println!("{}", self.state);
 
         let legal_moves = &self.state.legal_move();
         println!("legal moves: {}", legal_moves.len());

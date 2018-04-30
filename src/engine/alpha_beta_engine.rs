@@ -15,7 +15,7 @@ impl AlphaBetaEngine {
         }
     }
     pub fn proceed_move(&mut self) {
-        self.state.print();
+        println!("{}", self.state);
 
         let mut mv = NULL_MOVE;
         for depth in 0..5 {
