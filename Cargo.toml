@@ -14,3 +14,7 @@ path = "src/auto.rs"
 [[bin]]
 name = "debug"
 path = "src/debug.rs"
+
+[[bin]]
+name = "learn"
+path = "src/learn.rs"
