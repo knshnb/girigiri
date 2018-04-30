@@ -12,7 +12,6 @@ fn main() {
     let mut mv = NULL_MOVE;
     loop {
         println!("{:?}", state);
-        // state.print_debug();
         let mut input = String::new();
         io::stdin().read_line(&mut input)
             .expect("failed to read line");
