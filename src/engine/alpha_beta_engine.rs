@@ -2,16 +2,19 @@ use board::state::*;
 use board::alpha_beta::*;
 use board::move_encode::*;
 use board::hash::*;
+use board::eval::*;
 use std::time::Instant;
 
 pub struct AlphaBetaEngine {
     pub state: State,
+    pub evaluator: Evaluator,
 }
 
 impl AlphaBetaEngine {
     pub fn new() -> AlphaBetaEngine {
         AlphaBetaEngine {
             state: State::new(),
+            evaluator: Evaluator::new(),
         }
     }
     pub fn proceed_move(&mut self) {
@@ -35,6 +38,7 @@ impl AlphaBetaEngine {
         }
 
         self.state.apply_move(&mv);
+        println!("evaluator's score: {}", self.evaluator.eval(&self.state));
     }
     pub fn is_lose(&self) -> bool {
         self.state.is_lose()
