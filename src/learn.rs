@@ -5,6 +5,7 @@ use std::time::Instant;
 
 mod engine;
 mod board;
+mod csa;
 // use engine::first_engine::*;
 // use engine::random_engine::*;
 use engine::alpha_beta_engine::*;

@@ -3,7 +3,9 @@ extern crate lazy_static;
 
 use std::io;
 
+mod engine;
 mod board;
+mod csa;
 use board::state::State;
 use board::move_encode::*;
 
