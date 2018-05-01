@@ -17,6 +17,7 @@ impl CsaClient {
     }
 
     pub fn read(&mut self) -> String {
+        self.buf = [0; 8192];
         self.stream.read(&mut self.buf).unwrap();
         self.buf.iter().map(|&c| c as char).collect()
     }
