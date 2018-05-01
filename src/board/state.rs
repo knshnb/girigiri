@@ -44,6 +44,10 @@ impl State {
         }
     }
 
+    pub fn eval_pp(&self, evaluator: &Evaluator) -> f32 {
+        evaluator.eval(self)
+    }
+
     pub fn valid(ps: &[Piece; 81]) -> bool {
         /*
         (1. 二歩になっていない)
