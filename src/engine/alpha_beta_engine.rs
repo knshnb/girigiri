@@ -14,7 +14,7 @@ impl AlphaBetaEngine {
             state: State::new()
         }
     }
-    pub fn proceed_move(&mut self) {
+    pub fn proceed_move(&mut self) -> Move {
         println!("{}", self.state);
 
         let mut mv = NULL_MOVE;
@@ -31,6 +31,7 @@ impl AlphaBetaEngine {
         }
 
         self.state.apply_move(&mv);
+        mv
     }
     pub fn is_lose(&self) -> bool {
         self.state.is_lose()

@@ -74,6 +74,10 @@ impl Piece {
         Piece::to_piece((self as isize) & !BLACK_MASK)
     }
 
+    pub fn is_promoted(self) -> bool {
+        ((self as isize) & PROMOTED_MASK) == PROMOTED_MASK
+    }
+
     pub fn promote(self) -> Piece {
         Piece::to_piece((self as isize) | PROMOTED_MASK)
     }
@@ -82,6 +86,25 @@ impl Piece {
         Piece::to_piece((self as isize) & !PROMOTED_MASK)
     }
 
+    pub fn to_csa(self) -> &'static str {
+        match self.to_white() {
+            Piece::pawn => "FU",
+            Piece::lance => "KY",
+            Piece::knight => "KE",
+            Piece::silver => "GI",
+            Piece::gold => "KI",
+            Piece::bishop => "KA",
+            Piece::rook => "HI",
+            Piece::king => "OU",
+            Piece::propawn => "TO",
+            Piece::prolance => "NY",
+            Piece::proknight => "NK",
+            Piece::prosilver => "NG",
+            Piece::horse => "UM",
+            Piece::dragon => "RY",
+            _ => unreachable!(),
+        }
+    }
 
     pub fn kind(self) -> usize {
         ((self as isize) & KIND_MASK) as usize
@@ -98,6 +121,19 @@ impl Piece {
             6   => " 金",
             7   => " 王",
             _   => " なし",
+        }
+    }
+    pub fn kind_to_csa(kind: usize) -> &'static str {
+        match kind {
+            0   => "FU",
+            1   => "KY",
+            2   => "KE",
+            3   => "GI",
+            4   => "KA",
+            5   => "HI",
+            6   => "KI",
+            7   => "OU",
+            _   => unreachable!(),
         }
     }
 }

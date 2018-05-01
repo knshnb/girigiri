@@ -3,6 +3,7 @@ extern crate lazy_static;
 
 use std::time::Instant;
 
+mod csa;
 mod engine;
 mod board;
 // use engine::first_engine::*;
