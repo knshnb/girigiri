@@ -109,17 +109,17 @@ impl Evaluator {
                 match (*state).board[i][j].whose() {
                     Color::Black => {
                         let dst = if (*state).color {
-                            &mut mine
-                        } else {
                             &mut yours
+                        } else {
+                            &mut mine
                         };
                         (*dst).push(((*state).board[i][j].to_white(), i, j));
                     }
                     Color::White => {
                         let dst = if (*state).color {
-                            &mut yours
-                        } else {
                             &mut mine
+                        } else {
+                            &mut yours
                         };
                         (*dst).push(((*state).board[i][j].to_white(), i, j));
                     }
@@ -155,17 +155,17 @@ impl Evaluator {
                 match (*state).board[i][j].whose() {
                     Color::Black => {
                         let dst = if (*state).color {
-                            &mut mine
-                        } else {
                             &mut yours
+                        } else {
+                            &mut mine
                         };
                         (*dst).push(((*state).board[i][j].to_white(), i, j));
                     }
                     Color::White => {
                         let dst = if (*state).color {
-                            &mut yours
-                        } else {
                             &mut mine
+                        } else {
+                            &mut yours
                         };
                         (*dst).push(((*state).board[i][j].to_white(), i, j));
                     }

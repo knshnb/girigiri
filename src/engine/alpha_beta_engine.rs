@@ -58,7 +58,6 @@ impl AlphaBetaEngine {
 
         let mvpos = mv.to & 0b01111111;
         self.state.apply_move(&mv);
-        self.state.color = true;
         self.evaluator
             .update(&self.state, (mvpos / 9) as usize, (mvpos % 9) as usize);
         true
