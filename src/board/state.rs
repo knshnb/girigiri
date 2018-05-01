@@ -52,7 +52,7 @@ impl State {
         */
         for i in 0..9 {
             if ps[i].kind() <= 2 && ps[i].whose() == Color::Black {
-                return false
+                return false;
             }
         }
         for i in 72..81 {

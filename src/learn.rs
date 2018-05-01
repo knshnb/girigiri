@@ -10,7 +10,7 @@ use board::state::*;
 use board::hash::*;
 use std::io::{self, Write};
 
-const LOOP_MAX: i32 = 1000;
+const LOOP_MAX: i32 = 20000;
 const NORMALIZE_TURNS: i32 = 100;
 
 fn main() {
