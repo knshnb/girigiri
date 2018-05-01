@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate lazy_static;
 
+use std::time::Instant;
+
 mod engine;
 mod board;
 // use engine::first_engine::*;
@@ -10,12 +12,13 @@ use board::state::*;
 use board::hash::*;
 use std::io::{self, Write};
 
-const LOOP_MAX: i32 = 20000;
+const LOOP_MAX: i32 = 2000;
 const NORMALIZE_TURNS: i32 = 100;
 
 fn main() {
     let mut engine = AlphaBetaEngine::new();
     let mut counter = 0;
+    let start = Instant::now();
     while counter < LOOP_MAX {
         engine.state = State::new();
         unsafe {
@@ -31,6 +34,12 @@ fn main() {
             io::stdout().flush().unwrap();
         }
     }
+    let elapsed = start.elapsed();
+    print!(
+        "\rLearning finished. Total time: {}.{:03} sec\n",
+        elapsed.as_secs(),
+        elapsed.subsec_nanos() / 1_000_000
+    );
     engine.evaluator.save_pps();
     engine.evaluator.save_ppo();
 }

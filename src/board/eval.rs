@@ -176,7 +176,7 @@ impl Evaluator {
 
         for &a in mine.iter() {
             let ((ap, ai, aj), (pp, pi, pj)) = if a.1 < p.1 { (a, p) } else { (p, a) };
-            if ai != pi && aj != pj {
+            if ai != pi || aj != pj {
                 self.pps[ap as usize][pp as usize][pi - ai][pj + 8 - aj] += 1.0;
             }
         }
@@ -192,6 +192,16 @@ impl Evaluator {
                 for k in 0..15 {
                     for l in 0..15 {
                         self.pps[k][l][i][j] -= 1.0 / turns as f32;
+                    }
+                }
+            }
+        }
+
+        for i in 0..17 {
+            for j in 0..17 {
+                for k in 0..15 {
+                    for l in 0..15 {
+                        self.ppo[k][l][i][j] -= 1.0 / turns as f32;
                     }
                 }
             }
