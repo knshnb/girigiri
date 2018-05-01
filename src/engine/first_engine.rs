@@ -7,7 +7,7 @@ pub struct FirstEngine {
 impl FirstEngine {
     pub fn new() -> FirstEngine {
         FirstEngine {
-            state: State::new()
+            state: State::new(),
         }
     }
     pub fn proceed_move(&mut self) {

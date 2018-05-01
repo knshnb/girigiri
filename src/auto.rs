@@ -15,12 +15,19 @@ fn main() {
     let start = Instant::now();
     loop {
         if engine.is_lose() {
-            if engine.state.color { println!("White won!"); }
-            else { println!("Black won!"); }
+            if engine.state.color {
+                println!("White won!");
+            } else {
+                println!("Black won!");
+            }
             break;
         }
         engine.proceed_move();
     }
     let elapsed = start.elapsed();
-    println!("total time: {}.{:03} sec\n", elapsed.as_secs(), elapsed.subsec_nanos() / 1_000_000);
+    println!(
+        "total time: {}.{:03} sec\n",
+        elapsed.as_secs(),
+        elapsed.subsec_nanos() / 1_000_000
+    );
 }

@@ -465,9 +465,15 @@ impl State {
                 if self.board[to_i][to_j] == Piece::null {
                     for &n in &captured_kinds {
                         match n {
-                            0 => if to_i >= 1 && !self.pawn_checker[self.color as usize][to_j] { moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));},
-                            1 => if to_i >= 1 { moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));},
-                            2 => if to_i >= 2 { moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));},
+                            0 => if to_i >= 1 && !self.pawn_checker[self.color as usize][to_j] {
+                                moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
+                            },
+                            1 => if to_i >= 1 {
+                                moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
+                            },
+                            2 => if to_i >= 2 {
+                                moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
+                            },
                             _ => moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8)),
                         }
                     }

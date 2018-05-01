@@ -46,9 +46,7 @@ pub enum Piece {
 
 impl Piece {
     fn to_piece(x: isize) -> Piece {
-        unsafe {
-            ::std::mem::transmute::<u8, Piece>(x as u8)
-        }
+        unsafe { ::std::mem::transmute::<u8, Piece>(x as u8) }
     }
 
     pub fn new(kind: usize, is_black: bool) -> Piece {
@@ -70,7 +68,7 @@ impl Piece {
         }
     }
 
-    fn to_white(self) -> Piece {
+    pub fn to_white(self) -> Piece {
         Piece::to_piece((self as isize) & !BLACK_MASK)
     }
 
@@ -112,15 +110,15 @@ impl Piece {
 
     pub fn kind_to_str(kind: usize) -> &'static str {
         match kind {
-            0   => " 歩",
-            1   => " 香",
-            2   => " 桂",
-            3   => " 銀",
-            4   => " 角",
-            5   => " 飛",
-            6   => " 金",
-            7   => " 王",
-            _   => " なし",
+            0 => " 歩",
+            1 => " 香",
+            2 => " 桂",
+            3 => " 銀",
+            4 => " 角",
+            5 => " 飛",
+            6 => " 金",
+            7 => " 王",
+            _ => " なし",
         }
     }
     pub fn kind_to_csa(kind: usize) -> &'static str {
@@ -141,21 +139,21 @@ impl Piece {
 impl fmt::Display for Piece {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let name = match self.to_white() {
-            Piece::null   => "口",
-            Piece::pawn   => "歩",
-            Piece::lance   => "香",
-            Piece::knight   => "桂",
-            Piece::silver   => "銀",
-            Piece::bishop   => "角",
-            Piece::rook   => "飛",
-            Piece::propawn   => "と",
-            Piece::prolance   => "杏",
-            Piece::proknight   => "圭",
-            Piece::prosilver  => "全",
-            Piece::horse  => "馬",
-            Piece::dragon  => "龍",
-            Piece::gold  => "金",
-            Piece::king  => "王",
+            Piece::null => "口",
+            Piece::pawn => "歩",
+            Piece::lance => "香",
+            Piece::knight => "桂",
+            Piece::silver => "銀",
+            Piece::bishop => "角",
+            Piece::rook => "飛",
+            Piece::propawn => "と",
+            Piece::prolance => "杏",
+            Piece::proknight => "圭",
+            Piece::prosilver => "全",
+            Piece::horse => "馬",
+            Piece::dragon => "龍",
+            Piece::gold => "金",
+            Piece::king => "王",
             _ => "not a piece",
         };
         let prefix = match self.whose() {
@@ -168,28 +166,6 @@ impl fmt::Display for Piece {
 
 impl fmt::Debug for Piece {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let name = match self.to_white() {
-            Piece::null   => "口",
-            Piece::pawn   => "歩",
-            Piece::lance   => "香",
-            Piece::knight   => "桂",
-            Piece::silver   => "銀",
-            Piece::bishop   => "角",
-            Piece::rook   => "飛",
-            Piece::propawn   => "と",
-            Piece::prolance   => "杏",
-            Piece::proknight   => "圭",
-            Piece::prosilver  => "全",
-            Piece::horse  => "馬",
-            Piece::dragon  => "龍",
-            Piece::gold  => "金",
-            Piece::king  => "王",
-            _ => "not a piece",
-        };
-        let prefix = match self.whose() {
-            Color::Null | Color::Black => " ",
-            Color::White => "^",
-        };
-        write!(f, "{}{}", prefix, name)
+        write!(f, "{}", self)
     }
 }

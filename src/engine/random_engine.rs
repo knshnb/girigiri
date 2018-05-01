@@ -11,7 +11,7 @@ pub struct RandomEngine {
 impl RandomEngine {
     pub fn new() -> RandomEngine {
         RandomEngine {
-            state: State::new()
+            state: State::new(),
         }
     }
     pub fn proceed_move(&mut self) {

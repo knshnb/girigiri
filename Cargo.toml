@@ -16,6 +16,10 @@ name = "debug"
 path = "src/debug.rs"
 
 [[bin]]
+name = "learn"
+path = "src/learn.rs"
+
+[[bin]]
 name = "main"
 path = "src/main.rs"
 

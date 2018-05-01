@@ -13,7 +13,8 @@ fn main() {
     loop {
         println!("{:?}", state);
         let mut input = String::new();
-        io::stdin().read_line(&mut input)
+        io::stdin()
+            .read_line(&mut input)
             .expect("failed to read line");
         let bytes = input.as_bytes();
         if bytes.len() == 2 {
