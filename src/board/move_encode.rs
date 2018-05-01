@@ -39,7 +39,7 @@ impl Move {
             _ => {
                 let from_j = b'9' - cmd_as_bytes[1];
                 let from_i = cmd_as_bytes[2] - b'1';
-                if state.board[from_i as usize][from_j as usize].is_promoted() && csa_is_promoted(&cmd[5..7]) {
+                if !state.board[from_i as usize][from_j as usize].is_promoted() && csa_is_promoted(&cmd[5..7]) {
                     Move::promote_encode(from_i as i8, from_j as i8, to_i as i8, to_j as i8)
                 } else {
                     Move::normal_encode(from_i as i8, from_j as i8, to_i as i8, to_j as i8)
