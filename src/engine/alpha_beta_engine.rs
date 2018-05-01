@@ -17,7 +17,7 @@ impl AlphaBetaEngine {
             evaluator: Evaluator::new(),
         }
     }
-    pub fn proceed_move(&mut self) {
+    pub fn proceed_move(&mut self) -> Move {
         println!("{}", self.state);
 
         let mut mv = NULL_MOVE;
@@ -39,6 +39,7 @@ impl AlphaBetaEngine {
 
         self.state.apply_move(&mv);
         println!("PP score: {}", self.evaluator.eval(&self.state));
+        mv
     }
 
     pub fn proceed_move_learn(&mut self) -> bool {
