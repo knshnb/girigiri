@@ -147,7 +147,7 @@ impl Evaluator {
     }
 
     pub fn update(&mut self, state: &State, pi: usize, pj: usize) {
-        // TODO: pの先手、後手を考慮していないのであとで直す
+        // TODO: 学習時、pは先手のみ
         let mut p = ((*state).board[pi][pj].to_white(), pi, pj);
         let (mut mine, mut yours) = (Vec::new(), Vec::new());
         for i in 0..9 {
