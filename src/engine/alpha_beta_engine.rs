@@ -17,13 +17,18 @@ impl AlphaBetaEngine {
             evaluator: Evaluator::new(),
         }
     }
+
+    pub fn search(&mut self, depth: u8) -> i32 {
+        search(self, depth)
+    }
+
     pub fn proceed_move(&mut self) -> Move {
         println!("{}", self.state);
 
         let mut mv = NULL_MOVE;
         for depth in 0..5 {
             let start = Instant::now();
-            let eval = search(&mut self.state, depth as u8);
+            let eval = self.search(depth as u8);
             unsafe {
                 mv = HASH_TABLE[(self.state.hash_key & HASH_KEY_MASK) as usize].best_move;
             }
@@ -45,7 +50,7 @@ impl AlphaBetaEngine {
     pub fn proceed_move_learn(&mut self) -> bool {
         let mut mv = NULL_MOVE;
         let depth = 3;
-        let eval = search(&mut self.state, depth as u8);
+        let eval = self.search(depth);
         if eval.abs() > 10000 {
             return false;
         }
