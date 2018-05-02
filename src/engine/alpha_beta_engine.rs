@@ -53,6 +53,7 @@ impl AlphaBetaEngine {
                 end.as_secs(),
                 end.subsec_nanos() / 1_000_000
             );
+            if depth > 0 && mv.is_null_move() { break; }
         }
 
         self.state.apply_move(&mv);
