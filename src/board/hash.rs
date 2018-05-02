@@ -21,8 +21,12 @@ pub const HASH_ENTRY_NONE: HashEntry = HashEntry {
     best_move: NULL_MOVE,
 };
 
-pub const HASH_TABLE_SIZE: usize = 1 << 24;
-pub const HASH_KEY_MASK: u64 = 0b1111111111111111;
+// PCのメモリに応じて設定
+const HASH_SHIFT_SIZE: u32 = 24;
+pub const HASH_TABLE_SIZE: usize = 1 << HASH_SHIFT_SIZE;
+lazy_static! {
+    pub static ref HASH_KEY_MASK: u64 = 2u64.pow(HASH_SHIFT_SIZE) - 1;
+}
 
 pub static mut HASH_TABLE: [HashEntry; HASH_TABLE_SIZE] = [HASH_ENTRY_NONE; HASH_TABLE_SIZE];
 

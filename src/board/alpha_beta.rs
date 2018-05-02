@@ -14,7 +14,7 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
     let mut first_move = NULL_MOVE;
     let entry;
     unsafe {
-        entry = HASH_TABLE[(engine.state.hash_key & HASH_KEY_MASK) as usize];
+        entry = HASH_TABLE[(engine.state.hash_key & *HASH_KEY_MASK) as usize];
     }
     if engine.state.hash_key == entry.hash_key && engine.state.color == entry.color {
         if depth <= entry.remain_depth {
@@ -73,7 +73,7 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
         best_move: best_move,
     };
     unsafe {
-        HASH_TABLE[(engine.state.hash_key & HASH_KEY_MASK) as usize] = new_entry;
+        HASH_TABLE[(engine.state.hash_key & *HASH_KEY_MASK) as usize] = new_entry;
     }
     Some(best_val)
 }

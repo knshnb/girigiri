@@ -43,7 +43,7 @@ impl AlphaBetaEngine {
             }
             let eval = eval.unwrap();
             unsafe {
-                mv = HASH_TABLE[(self.state.hash_key & HASH_KEY_MASK) as usize].best_move;
+                mv = HASH_TABLE[(self.state.hash_key & *HASH_KEY_MASK) as usize].best_move;
             }
             let end = start.elapsed();
             println!("depth: {}, eval: {}, move: ", depth, eval);
@@ -70,7 +70,7 @@ impl AlphaBetaEngine {
         }
         // println!("{}", self.state);
         unsafe {
-            mv = HASH_TABLE[(self.state.hash_key & HASH_KEY_MASK) as usize].best_move;
+            mv = HASH_TABLE[(self.state.hash_key & *HASH_KEY_MASK) as usize].best_move;
         }
         // println!("depth: {}, eval: {}, move: ", depth, eval);
         // self.state.print_expectation(depth);

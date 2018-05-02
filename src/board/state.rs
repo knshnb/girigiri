@@ -128,7 +128,7 @@ impl State {
         for _ in 0..depth {
             let mv;
             unsafe {
-                mv = HASH_TABLE[(state.hash_key & HASH_KEY_MASK) as usize].best_move;
+                mv = HASH_TABLE[(state.hash_key & *HASH_KEY_MASK) as usize].best_move;
             }
             state.print_move(&mv);
             state.apply_move(&mv);
