@@ -79,6 +79,10 @@ impl CsaClient {
         self.game_summary.find("Your_Turn:+").is_some()
     }
 
+    pub fn resign(&mut self) {
+        self.write("%TORYO");
+    }
+
     pub fn is_win(&self) -> bool {
         let s: String = self.buf.iter().map(|&c| c as char).collect();
         s.find("#WIN").is_some()
