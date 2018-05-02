@@ -12,7 +12,7 @@ impl CsaPlayer {
     pub fn new(host: (&str, u16)) -> CsaPlayer {
         CsaPlayer {
             client: CsaClient::connect(host),
-            engine: AlphaBetaEngine::new(10, true),
+            engine: AlphaBetaEngine::new(10, 10, true),  // (depth, time_limit, use_pp)
             is_black: true,
         }
     }

@@ -8,16 +8,18 @@ use std::time::{Duration, Instant};
 pub struct AlphaBetaEngine {
     pub state: State,
     pub evaluator: Evaluator,
+    pub depth: u8,
     pub time_limit: Duration,
     pub instant: Instant,
     pub use_pp: bool,
 }
 
 impl AlphaBetaEngine {
-    pub fn new(time_limit: u64, use_pp: bool) -> AlphaBetaEngine {
+    pub fn new(depth: u8, time_limit: u64, use_pp: bool) -> AlphaBetaEngine {
         AlphaBetaEngine {
             state: State::new(),
             evaluator: Evaluator::new(),
+            depth: depth,
             time_limit: Duration::new(time_limit, 0),
             instant: Instant::now(),
             use_pp: use_pp,
@@ -33,7 +35,7 @@ impl AlphaBetaEngine {
         println!("{}", self.state);
 
         let mut mv = NULL_MOVE;
-        for depth in 0..5 {
+        for depth in 0..self.depth {
             let start = Instant::now();
             let eval = self.search(depth as u8);
             if eval.is_none() {
