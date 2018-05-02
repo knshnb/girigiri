@@ -11,18 +11,24 @@ mod board;
 use engine::alpha_beta_engine::*;
 
 fn main() {
-    let mut engine = AlphaBetaEngine::new();
+    let mut black_engine = AlphaBetaEngine::new(true);
+    let mut white_engine = AlphaBetaEngine::new(false);
     let start = Instant::now();
     loop {
-        if engine.is_lose() {
-            if engine.state.color {
+        if black_engine.is_lose() {
+            if black_engine.state.color {
                 println!("White won!");
             } else {
                 println!("Black won!");
             }
             break;
         }
-        engine.proceed_move();
+
+        if black_engine.state.color {
+            white_engine.state.apply_move(&black_engine.proceed_move());
+        } else {
+            black_engine.state.apply_move(&white_engine.proceed_move());
+        }
     }
     let elapsed = start.elapsed();
     println!(
