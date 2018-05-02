@@ -21,7 +21,7 @@ pub const HASH_ENTRY_NONE: HashEntry = HashEntry {
     best_move: NULL_MOVE,
 };
 
-pub const HASH_TABLE_SIZE: usize = 1 << 16;
+pub const HASH_TABLE_SIZE: usize = 1 << 24;
 pub const HASH_KEY_MASK: u64 = 0b1111111111111111;
 
 pub static mut HASH_TABLE: [HashEntry; HASH_TABLE_SIZE] = [HASH_ENTRY_NONE; HASH_TABLE_SIZE];

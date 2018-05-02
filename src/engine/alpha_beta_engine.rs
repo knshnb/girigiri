@@ -8,13 +8,15 @@ use std::time::Instant;
 pub struct AlphaBetaEngine {
     pub state: State,
     pub evaluator: Evaluator,
+    pub use_pp: bool,
 }
 
 impl AlphaBetaEngine {
-    pub fn new() -> AlphaBetaEngine {
+    pub fn new(use_pp: bool) -> AlphaBetaEngine {
         AlphaBetaEngine {
             state: State::new(),
             evaluator: Evaluator::new(),
+            use_pp: use_pp,
         }
     }
 
@@ -28,15 +30,7 @@ impl AlphaBetaEngine {
         let mut mv = NULL_MOVE;
         for depth in 0..5 {
             let start = Instant::now();
-<<<<<<< HEAD
             let eval = self.search(depth as u8);
-=======
-            let eval = if self.state.color {
-                search(&mut self.state, depth as u8, &self.evaluator, true)
-            } else {
-                search(&mut self.state, depth as u8, &self.evaluator, false)
-            };
->>>>>>> Match PP with noPP
             unsafe {
                 mv = HASH_TABLE[(self.state.hash_key & HASH_KEY_MASK) as usize].best_move;
             }
@@ -57,12 +51,8 @@ impl AlphaBetaEngine {
 
     pub fn proceed_move_learn(&mut self) -> bool {
         let mut mv = NULL_MOVE;
-        let depth = 3;
-<<<<<<< HEAD
+        let depth = 4;
         let eval = self.search(depth);
-=======
-        let eval = search(&mut self.state, depth as u8, &self.evaluator, false);
->>>>>>> Match PP with noPP
         if eval.abs() > 10000 {
             return false;
         }
