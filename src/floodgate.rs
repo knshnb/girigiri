@@ -14,7 +14,7 @@ fn main() {
     let mut player = CsaPlayer::new(("wdoor.c.u-tokyo.ac.jp", 4081));
     player.login(USERNAME, PASSWORD);
     println!("waiting for a game...");
-    player.find_game();
+    player.find_game_auto();
     println!("\n{}\n", player.client.read());
     player.init_turn();
 

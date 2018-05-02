@@ -21,8 +21,11 @@ impl CsaPlayer {
         self.client.login(username, password);
     }
 
-    pub fn find_game(&mut self) {
-        self.client.find_game();
+    pub fn find_game_with_confirmation(&mut self) {
+        self.client.find_game_with_confirmation();
+    }
+    pub fn find_game_auto(&mut self) {
+        self.client.find_game_auto();
     }
 
     pub fn init_turn(&mut self) {

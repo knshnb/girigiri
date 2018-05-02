@@ -50,7 +50,7 @@ impl CsaClient {
         }
     }
 
-    pub fn find_game(&mut self) {
+    pub fn find_game_with_confirmation(&mut self) {
         loop {
             let s = self.read();
             if !s.is_empty() && s.find("BEGIN Game_Summary").is_some() {
@@ -62,6 +62,19 @@ impl CsaClient {
             }
         }
     }
+    
+    pub fn find_game_auto(&mut self) {
+        loop {
+            let s = self.read();
+            if !s.is_empty() && s.find("BEGIN Game_Summary").is_some() {
+                println!("{}", s);
+                self.write("AGREE");
+                self.game_summary = s;
+                return;
+            }
+        }
+    }
+
 
     pub fn is_my_turn(&self) -> bool {
         self.game_summary.find("Your_Turn:+").is_some()

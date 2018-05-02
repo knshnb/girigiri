@@ -14,7 +14,7 @@ fn main() {
     let mut player = CsaPlayer::new(("gserver.computer-shogi.org", 4081));
     player.login(USERNAME, PASSWORD);
     println!("waiting for a game...");
-    player.find_game();
+    player.find_game_with_confirmation();
     println!("\n{}\n", player.client.read());
     player.init_turn();
 
