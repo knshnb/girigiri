@@ -48,14 +48,15 @@ impl CsaPlayer {
         self.engine.state.apply_move(&mv);
     }
     pub fn play(&mut self) {
+        if self.is_black {
+            self.my_turn();
+            if self.client.check_finish() { return; }
+        }
         loop {
-            if self.is_black {
-                self.my_turn();
-                self.opponent_turn();
-            } else {
-                self.opponent_turn();
-                self.my_turn();
-            }
+            self.opponent_turn();
+            if self.client.check_finish() { return; }
+            self.my_turn();
+            if self.client.check_finish() { return; }
         }
     }
 }
