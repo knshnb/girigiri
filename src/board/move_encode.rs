@@ -33,9 +33,7 @@ impl Move {
         let to_j = b'9' - cmd_as_bytes[3];
         let to_i = cmd_as_bytes[4] - b'1';
         match &cmd[1..3] {
-            "00" => {
-                Move::drop_encode(csa_to_kind(&cmd[5..7]) as u8, to_i as i8, to_j as i8)
-            }
+            "00" => Move::drop_encode(csa_to_kind(&cmd[5..7]) as u8, to_i as i8, to_j as i8),
             _ => {
                 let from_j = b'9' - cmd_as_bytes[1];
                 let from_i = cmd_as_bytes[2] - b'1';
@@ -51,10 +49,22 @@ impl Move {
     // without first "+" or "-" (referring to color)
     pub fn to_csa_suffix(&self, state: &State) -> String {
         if self.is_drop() {
-            format!("00{}{}{}", 9 - self.to_j(), self.to_i() + 1, Piece::kind_to_csa(self.drop_kind()))
+            format!(
+                "00{}{}{}",
+                9 - self.to_j(),
+                self.to_i() + 1,
+                Piece::kind_to_csa(self.drop_kind())
+            )
         } else {
             let piece = (*state).board[self.to_i() as usize][self.to_j() as usize];
-            format!("{}{}{}{}{}", 9 - self.from_j(), self.from_i() + 1, 9 - self.to_j(), self.to_i() + 1, piece.to_csa())
+            format!(
+                "{}{}{}{}{}",
+                9 - self.from_j(),
+                self.from_i() + 1,
+                9 - self.to_j(),
+                self.to_i() + 1,
+                piece.to_csa()
+            )
         }
     }
 

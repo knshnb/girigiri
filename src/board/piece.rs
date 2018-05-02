@@ -123,15 +123,15 @@ impl Piece {
     }
     pub fn kind_to_csa(kind: usize) -> &'static str {
         match kind {
-            0   => "FU",
-            1   => "KY",
-            2   => "KE",
-            3   => "GI",
-            4   => "KA",
-            5   => "HI",
-            6   => "KI",
-            7   => "OU",
-            _   => unreachable!(),
+            0 => "FU",
+            1 => "KY",
+            2 => "KE",
+            3 => "GI",
+            4 => "KA",
+            5 => "HI",
+            6 => "KI",
+            7 => "OU",
+            _ => unreachable!(),
         }
     }
 }

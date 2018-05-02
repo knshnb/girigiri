@@ -38,7 +38,9 @@ impl CsaPlayer {
         let mv_csa = format!("{}{}\n", turn_symbol, mv.to_csa_suffix(&self.engine.state));
         self.client.write(&mv_csa);
         println!("my move: \n{}\n", self.client.read());
-        if self.client.check_finish() { return true; }
+        if self.client.check_finish() {
+            return true;
+        }
         self.client.read(); // ?? no content
         false
     }
@@ -46,18 +48,26 @@ impl CsaPlayer {
         println!("waiting ...");
         let cmd = self.client.read();
         println!("opponent's move: \n{}\n", cmd);
-        if self.client.check_finish() { return true; }
+        if self.client.check_finish() {
+            return true;
+        }
         let mv = Move::from_csa(&cmd, &self.engine.state);
         self.engine.state.apply_move(&mv);
         false
     }
     pub fn play(&mut self) {
         if self.is_black {
-            if self.my_turn() { return; }
+            if self.my_turn() {
+                return;
+            }
         }
         loop {
-            if self.opponent_turn() { return; }
-            if self.my_turn() { return; }
+            if self.opponent_turn() {
+                return;
+            }
+            if self.my_turn() {
+                return;
+            }
         }
     }
 }

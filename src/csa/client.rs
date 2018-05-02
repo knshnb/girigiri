@@ -75,7 +75,6 @@ impl CsaClient {
         }
     }
 
-
     pub fn is_my_turn(&self) -> bool {
         self.game_summary.find("Your_Turn:+").is_some()
     }
