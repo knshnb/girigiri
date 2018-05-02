@@ -130,18 +130,18 @@ impl Evaluator {
         let mut sum: f32 = 0.0;
         for (i, &a) in mine.iter().enumerate() {
             for &b in &mine[(i + 1)..] {
-                let ((ap, ai, aj), (bp, bi, bj)) = if a.1 < b.1 { (a, b) } else { (b, a) };
-                sum += self.pps[ap as usize][bp as usize][bi - ai][bj + 8 - aj];
+                let ((ap, ai, aj), (bp, bi, bj)) = if a.2 < b.2 { (a, b) } else { (b, a) };
+                sum += self.pps[ap as usize][bp as usize][bj - aj][bi + 8 - ai];
             }
         }
         for (i, &a) in yours.iter().enumerate() {
             for &b in &yours[(i + 1)..] {
-                let ((ap, ai, aj), (bp, bi, bj)) = if a.1 < b.1 { (a, b) } else { (b, a) };
-                sum -= self.pps[bp as usize][ap as usize][bi - ai][aj + 8 - bj];
+                let ((ap, ai, aj), (bp, bi, bj)) = if a.2 < b.2 { (a, b) } else { (b, a) };
+                sum -= self.pps[bp as usize][ap as usize][bj - aj][ai + 8 - bi];
             }
         }
         for (&(ap, ai, aj), &(bp, bi, bj)) in mine.iter().zip(yours.iter()) {
-            sum += self.ppo[ap as usize][bp as usize][bi + 8 - ai][bj + 8 - aj];
+            sum += self.ppo[ap as usize][bp as usize][bj + 8 - aj][bi + 8 - ai];
         }
         sum
     }
@@ -175,14 +175,14 @@ impl Evaluator {
         }
 
         for &a in mine.iter() {
-            let ((ap, ai, aj), (pp, pi, pj)) = if a.1 < p.1 { (a, p) } else { (p, a) };
+            let ((ap, ai, aj), (pp, pi, pj)) = if a.2 < p.2 { (a, p) } else { (p, a) };
             if ai != pi || aj != pj {
-                self.pps[ap as usize][pp as usize][pi - ai][pj + 8 - aj] += 1.0;
+                self.pps[ap as usize][pp as usize][pj - aj][pi + 8 - ai] += 1.0;
             }
         }
 
         for &(ap, ai, aj) in yours.iter() {
-            self.ppo[p.0 as usize][ap as usize][ai + 8 - pi][aj + 8 - pj] += 1.0;
+            self.ppo[p.0 as usize][ap as usize][aj + 8 - pj][ai + 8 - pi] += 1.0;
         }
     }
 
