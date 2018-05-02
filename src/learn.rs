@@ -17,7 +17,7 @@ const LOOP_MAX: i32 = 2000;
 const NORMALIZE_TURNS: i32 = 100;
 
 fn main() {
-    let mut engine = AlphaBetaEngine::new(false);
+    let mut engine = AlphaBetaEngine::new(10, false);
     let mut counter = 0;
     let start = Instant::now();
     while counter < LOOP_MAX {
