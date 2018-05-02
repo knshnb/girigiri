@@ -32,31 +32,32 @@ impl CsaPlayer {
         self.is_black = self.client.is_my_turn();
     }
 
-    fn my_turn(&mut self) {
+    fn my_turn(&mut self) -> bool {
         let mv = self.engine.proceed_move();
         let turn_symbol = if self.is_black { "+" } else { "-" };
         let mv_csa = format!("{}{}\n", turn_symbol, mv.to_csa_suffix(&self.engine.state));
         self.client.write(&mv_csa);
         println!("my move: \n{}\n", self.client.read());
+        if self.client.check_finish() { return true; }
         self.client.read(); // ?? no content
+        false
     }
-    fn opponent_turn(&mut self) {
+    fn opponent_turn(&mut self) -> bool {
         println!("waiting ...");
         let cmd = self.client.read();
         println!("opponent's move: \n{}\n", cmd);
+        if self.client.check_finish() { return true; }
         let mv = Move::from_csa(&cmd, &self.engine.state);
         self.engine.state.apply_move(&mv);
+        false
     }
     pub fn play(&mut self) {
         if self.is_black {
-            self.my_turn();
-            if self.client.check_finish() { return; }
+            if self.my_turn() { return; }
         }
         loop {
-            self.opponent_turn();
-            if self.client.check_finish() { return; }
-            self.my_turn();
-            if self.client.check_finish() { return; }
+            if self.opponent_turn() { return; }
+            if self.my_turn() { return; }
         }
     }
 }
