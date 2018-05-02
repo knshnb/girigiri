@@ -90,6 +90,10 @@ impl Move {
     pub fn drop_kind(&self) -> usize {
         (self.from as u8 - 81) as usize
     }
+
+    pub fn is_null_move(self) -> bool {
+        self == NULL_MOVE
+    }
 }
 
 impl PartialEq for Move {

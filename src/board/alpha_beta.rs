@@ -56,7 +56,7 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
                 return None;
             }
             let new_val = -(new_val.unwrap());
-            if new_val > best_val {
+            if new_val >= best_val {
                 best_val = new_val;
                 best_move = mv;
             }

@@ -16,20 +16,19 @@ fn main() {
 
     let start = Instant::now();
     loop {
-        if black_engine.is_lose() {
-            if black_engine.state.color {
-                println!("White won!");
-            } else {
-                println!("Black won!");
-            }
+        let mv = black_engine.proceed_move();
+        if mv.is_null_move() {
+            println!("Resign\nWhite won!");
             break;
         }
+        white_engine.state.apply_move(&mv);
 
-        if black_engine.state.color {
-            white_engine.state.apply_move(&black_engine.proceed_move());
-        } else {
-            black_engine.state.apply_move(&white_engine.proceed_move());
+        let mv = white_engine.proceed_move();
+        if mv.is_null_move() {
+            println!("Resign\nBlack won!");
+            break;
         }
+        black_engine.state.apply_move(&mv);
     }
     let elapsed = start.elapsed();
     println!(
