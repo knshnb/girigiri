@@ -7,7 +7,10 @@ use board::static_search::*;
 use board::hash::*;
 use engine::alpha_beta_engine::*;
 
-pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, beta: i32) -> i32 {
+pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, beta: i32) -> Option<i32> {
+    if engine.instant.elapsed() >= engine.time_limit {
+        return None;
+    }
     let mut first_move = NULL_MOVE;
     let entry;
     unsafe {
@@ -15,7 +18,7 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
     }
     if engine.state.hash_key == entry.hash_key && engine.state.color == entry.color {
         if depth <= entry.remain_depth {
-            return entry.value;
+            return Some(entry.value);
         } else {
             first_move = entry.best_move;
         }
@@ -42,8 +45,12 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
         }
         for mv in moves {
             engine.state.apply_move(&mv);
-            let new_val = -sub_search(engine, depth - 1, -beta, -cmp::max(alpha, best_val));
+            let new_val = sub_search(engine, depth - 1, -beta, -cmp::max(alpha, best_val));
             engine.state.undo_move(&mv);
+            if new_val.is_none() {
+                return None;
+            }
+            let new_val = -(new_val.unwrap());
             if new_val > best_val {
                 best_val = new_val;
                 best_move = mv;
@@ -63,9 +70,9 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
     unsafe {
         HASH_TABLE[(engine.state.hash_key & HASH_KEY_MASK) as usize] = new_entry;
     }
-    best_val
+    Some(best_val)
 }
 
-pub fn search(ref mut engine: &mut AlphaBetaEngine, depth: u8) -> i32 {
+pub fn search(ref mut engine: &mut AlphaBetaEngine, depth: u8) -> Option<i32> {
     sub_search(engine, depth, -(i32::max_value()), i32::max_value())
 }

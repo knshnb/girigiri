@@ -3,34 +3,43 @@ use board::alpha_beta::*;
 use board::move_encode::*;
 use board::hash::*;
 use board::eval::*;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 pub struct AlphaBetaEngine {
     pub state: State,
     pub evaluator: Evaluator,
+    pub time_limit: Duration,
+    pub instant: Instant,
     pub use_pp: bool,
 }
 
 impl AlphaBetaEngine {
-    pub fn new(use_pp: bool) -> AlphaBetaEngine {
+    pub fn new(time_limit: u64, use_pp: bool) -> AlphaBetaEngine {
         AlphaBetaEngine {
             state: State::new(),
             evaluator: Evaluator::new(),
+            time_limit: Duration::new(time_limit, 0),
+            instant: Instant::now(),
             use_pp: use_pp,
         }
     }
 
-    pub fn search(&mut self, depth: u8) -> i32 {
+    pub fn search(&mut self, depth: u8) -> Option<i32> {
         search(self, depth)
     }
 
     pub fn proceed_move(&mut self) -> Move {
+        self.instant = Instant::now();
         println!("{}", self.state);
 
         let mut mv = NULL_MOVE;
         for depth in 0..5 {
             let start = Instant::now();
             let eval = self.search(depth as u8);
+            if eval.is_none() {
+                break;
+            }
+            let eval = eval.unwrap();
             unsafe {
                 mv = HASH_TABLE[(self.state.hash_key & HASH_KEY_MASK) as usize].best_move;
             }
@@ -52,7 +61,7 @@ impl AlphaBetaEngine {
     pub fn proceed_move_learn(&mut self) -> bool {
         let mut mv = NULL_MOVE;
         let depth = 4;
-        let eval = self.search(depth);
+        let eval = self.search(depth).unwrap();
         if eval.abs() > 10000 {
             return false;
         }

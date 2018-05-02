@@ -11,8 +11,9 @@ mod board;
 use engine::alpha_beta_engine::*;
 
 fn main() {
-    let mut black_engine = AlphaBetaEngine::new(true);
-    let mut white_engine = AlphaBetaEngine::new(false);
+    let mut black_engine = AlphaBetaEngine::new(10, true);
+    let mut white_engine = AlphaBetaEngine::new(10, false);
+
     let start = Instant::now();
     loop {
         if black_engine.is_lose() {
