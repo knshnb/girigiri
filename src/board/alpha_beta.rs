@@ -25,8 +25,8 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
     let mut best_move = NULL_MOVE;
     if depth == 0 {
         best_val = static_search(&mut engine.state);
-        if (use_eval) {
-            best_val += (state.eval_pp(evaluator) * 0.1) as i32;
+        if (engine.use_pp) {
+            best_val += (engine.evaluator.eval(&engine.state) * 0.1) as i32;
         }
     } else {
         let mut moves = engine.state.legal_move();
