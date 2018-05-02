@@ -62,7 +62,7 @@ impl AlphaBetaEngine {
 
     pub fn proceed_move_learn(&mut self) -> bool {
         let mut mv = NULL_MOVE;
-        let depth = 4;
+        let depth = self.depth;
         let eval = self.search(depth).unwrap();
         if eval.abs() > 10000 {
             return false;

@@ -48,7 +48,7 @@ impl State {
         /*
         (1. 二歩になっていない)
         2. 歩、香、桂が進める位置にある
-        (3. いきなり王を取れない)
+        3. 王が自陣にいる
         */
         for i in 0..9 {
             if ps[i].kind() <= 2 && ps[i].whose() == Color::Black {
@@ -59,6 +59,24 @@ impl State {
             if ps[i].kind() <= 2 && ps[i].whose() == Color::White {
                 return false;
             }
+        }
+        let mut flag = false;
+        for i in 63..81 {
+            if ps[i].kind() == 7 && ps[i].whose() == Color::Black {
+                flag = true;
+            }
+        }
+        if !flag {
+            return false;
+        }
+        flag = false;
+        for i in 0..18 {
+            if ps[i].kind() == 7 && ps[i].whose() == Color::White {
+                flag = true;
+            }
+        }
+        if !flag {
+            return false;
         }
         true
     }
