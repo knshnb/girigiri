@@ -277,6 +277,10 @@ impl State {
         } else {
             print!("△");
         }
+        if mv.is_null_move() {
+            println!("投了");
+            return;
+        }
         print!("{}{}", 9 - mv.to_j(), 1 + mv.to_i());
         if mv.is_drop() {
             print!("{}打", Piece::new(mv.drop_kind(), self.color));
