@@ -7,8 +7,8 @@ mod board;
 use csa::player::*;
 use std::{thread, time};
 
-const USERNAME: &str = "hogehogehoge";
-const PASSWORD: &str = "floodgate-600-10F,hogehogehoge";
+const USERNAME: &str = "girigiri";
+const PASSWORD: &str = "floodgate-300-10F,hoge";
 
 fn main() {
     let mut player = CsaPlayer::new(("wdoor.c.u-tokyo.ac.jp", 4081));
