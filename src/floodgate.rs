@@ -7,11 +7,11 @@ mod board;
 use csa::player::*;
 use std::{thread, time};
 
-const USERNAME: &str = "girigiri";
-const PASSWORD: &str = "girigiri";
+const USERNAME: &str = "hogehogehoge";
+const PASSWORD: &str = "floodgate-600-10F,hogehogehoge";
 
 fn main() {
-    let mut player = CsaPlayer::new(("gserver.computer-shogi.org", 4081));
+    let mut player = CsaPlayer::new(("wdoor.c.u-tokyo.ac.jp", 4081));
     player.login(USERNAME, PASSWORD);
     println!("waiting for a game...");
     player.find_game();

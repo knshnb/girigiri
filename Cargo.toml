@@ -26,3 +26,7 @@ path = "src/main.rs"
 [[bin]]
 name = "main_test"
 path = "src/main_test.rs"
+
+[[bin]]
+name = "floodgate"
+path = "src/floodgate.rs"
