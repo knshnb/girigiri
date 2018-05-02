@@ -45,6 +45,11 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
         }
         for mv in moves {
             engine.state.apply_move(&mv);
+            if engine.state.opponent_king_is_capturable() {
+                // 王手無視
+                engine.state.undo_move(&mv);
+                continue;
+            }
             let new_val = sub_search(engine, depth - 1, -beta, -cmp::max(alpha, best_val));
             engine.state.undo_move(&mv);
             if new_val.is_none() {

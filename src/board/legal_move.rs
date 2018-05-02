@@ -5,6 +5,15 @@ use board::piece::*;
 use board::rules::MOVABLES;
 
 impl State {
+    pub fn opponent_king_is_capturable(&mut self) -> bool {
+        let opponent_king = if self.color { Piece::king } else { Piece::King };
+        let moves = self.legal_move();
+        for mv in moves {
+            if self.board[mv.to_i() as usize][mv.to_j() as usize] == opponent_king { return true; }
+        }
+        false
+    }
+
     pub fn legal_move_no_drop(&self) -> Vec<Move> {
         let mut moves: Vec<Move> = Vec::new();
         if self.color {
