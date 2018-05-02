@@ -56,7 +56,7 @@ impl AlphaBetaEngine {
         }
 
         self.state.apply_move(&mv);
-        println!("PP score: {}", self.evaluator.eval(&self.state));
+        println!("PP score: {}\n", self.evaluator.eval(&self.state));
         mv
     }
 
