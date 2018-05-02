@@ -474,13 +474,16 @@ impl State {
                 if self.board[to_i][to_j] == Piece::null {
                     for &n in &captured_kinds {
                         match n {
-                            0 => if to_i >= 1 && !self.pawn_checker[self.color as usize][to_j] {
+                            // pawn
+                            0 => if ((self.color && to_i >= 1) || (!self.color && to_i <= 7)) && !self.pawn_checker[self.color as usize][to_j] {
                                 moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
                             },
-                            1 => if to_i >= 1 {
+                            // lance
+                            1 => if ((self.color && to_i >= 1) || (!self.color && to_i <= 7)) {
                                 moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
                             },
-                            2 => if to_i >= 2 {
+                            // knight
+                            2 => if ((self.color && to_i >= 2) || (!self.color && to_i <= 6)) {
                                 moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
                             },
                             _ => moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8)),
