@@ -32,5 +32,5 @@ pub fn static_search(ref mut state: &mut State) -> i32 {
             state.undo_move(&mv);
         }
     }
-    cmp::min(eval(&state), -best_value)
+    cmp::max(eval(&state), best_value)
 }
