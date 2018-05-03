@@ -117,9 +117,9 @@ impl State {
 
     pub fn is_pawn_promote(&self, &mv: &Move) -> bool {
         if self.color {
-            mv.is_promote() && self.board[mv.from_i() as usize][mv.from_j() as usize] == Piece::pawn
-        } else {
             mv.is_promote() && self.board[mv.from_i() as usize][mv.from_j() as usize] == Piece::Pawn
+        } else {
+            mv.is_promote() && self.board[mv.from_i() as usize][mv.from_j() as usize] == Piece::pawn
         }
     }
 
