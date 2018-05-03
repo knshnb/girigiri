@@ -80,7 +80,7 @@ impl CsaClient {
     }
 
     pub fn resign(&mut self) {
-        self.write("%TORYO");
+        self.write("%TORYO\n");
     }
 
     pub fn is_win(&self) -> bool {

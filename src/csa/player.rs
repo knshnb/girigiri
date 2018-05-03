@@ -1,6 +1,7 @@
 use engine::alpha_beta_engine::*;
 use csa::client::*;
 use board::move_encode::*;
+use std::net::{TcpStream, ToSocketAddrs};
 
 pub struct CsaPlayer {
     pub client: CsaClient,
@@ -9,7 +10,7 @@ pub struct CsaPlayer {
 }
 
 impl CsaPlayer {
-    pub fn new(host: (&str, u16)) -> CsaPlayer {
+    pub fn new<A: ToSocketAddrs>(host: A) -> CsaPlayer {
         CsaPlayer {
             client: CsaClient::connect(host),
             engine: AlphaBetaEngine::new(10, 10, true), // (depth, time_limit, use_pp)
