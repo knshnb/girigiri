@@ -131,23 +131,35 @@ impl Evaluator {
         for (i, &a) in mine.iter().enumerate() {
             for &b in &mine[(i + 1)..] {
                 let ((ap, ai, aj), (bp, bi, bj)) = if a.2 < b.2 { (a, b) } else { (b, a) };
-                sum += self.pps[ap as usize][bp as usize][bj - aj][bi + 8 - ai];
+                if state.color {
+                    sum += self.pps[ap as usize][bp as usize][bj - aj][bi + 8 - ai];
+                } else {
+                    sum += self.pps[ap as usize][bp as usize][bj - aj][ai + 8 - bi];
+                }
             }
         }
         for (i, &a) in yours.iter().enumerate() {
             for &b in &yours[(i + 1)..] {
                 let ((ap, ai, aj), (bp, bi, bj)) = if a.2 < b.2 { (a, b) } else { (b, a) };
-                sum -= self.pps[bp as usize][ap as usize][bj - aj][ai + 8 - bi];
+                if state.color {
+                    sum -= self.pps[bp as usize][ap as usize][bj - aj][ai + 8 - bi];
+                } else {
+                    sum -= self.pps[bp as usize][ap as usize][bj - aj][bi + 8 - ai];
+                }
             }
         }
         for (&(ap, ai, aj), &(bp, bi, bj)) in mine.iter().zip(yours.iter()) {
-            sum += self.ppo[ap as usize][bp as usize][bj + 8 - aj][bi + 8 - ai];
+            if state.color {
+                sum += self.ppo[ap as usize][bp as usize][bj + 8 - aj][bi + 8 - ai];
+            } else {
+                sum += self.ppo[ap as usize][bp as usize][aj + 8 - bj][ai + 8 - bi];
+            }
         }
         sum
     }
 
     pub fn update(&mut self, state: &State, pi: usize, pj: usize) {
-        // TODO: 学習時、pは先手のみ
+        // 学習時、pは先手のみ
         let mut p = ((*state).board[pi][pj].to_white(), pi, pj);
         let (mut mine, mut yours) = (Vec::new(), Vec::new());
         for i in 0..9 {

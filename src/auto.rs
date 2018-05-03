@@ -11,8 +11,8 @@ mod board;
 use engine::alpha_beta_engine::*;
 
 fn main() {
-    let mut black_engine = AlphaBetaEngine::new(10, 10, true); // (depth, time_limit, use_pp)
-    let mut white_engine = AlphaBetaEngine::new(10, 10, false);
+    let mut black_engine = AlphaBetaEngine::new(10, 10, false); // (depth, time_limit, use_pp)
+    let mut white_engine = AlphaBetaEngine::new(10, 10, true);
 
     let start = Instant::now();
     loop {
