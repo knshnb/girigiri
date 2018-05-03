@@ -64,16 +64,16 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
                 break;
             }
         }
-    }
-    let new_entry: HashEntry = HashEntry {
-        hash_key: engine.state.hash_key,
-        color: engine.state.color,
-        value: best_val,
-        remain_depth: depth,
-        best_move: best_move,
-    };
-    unsafe {
-        HASH_TABLE[(engine.state.hash_key & *HASH_KEY_MASK) as usize] = new_entry;
+        let new_entry: HashEntry = HashEntry {
+            hash_key: engine.state.hash_key,
+            color: engine.state.color,
+            value: best_val,
+            remain_depth: depth,
+            best_move: best_move,
+        };
+        unsafe {
+            HASH_TABLE[(engine.state.hash_key & *HASH_KEY_MASK) as usize] = new_entry;
+        }
     }
     Some(best_val)
 }
