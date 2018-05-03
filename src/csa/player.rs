@@ -2,11 +2,16 @@ use engine::alpha_beta_engine::*;
 use csa::client::*;
 use board::move_encode::*;
 use std::net::{TcpStream, ToSocketAddrs};
+use std::fs::File;
+use std::path::Path;
+use std::error::Error;
+use std::io::prelude::*;
 
 pub struct CsaPlayer {
     pub client: CsaClient,
     engine: AlphaBetaEngine,
     is_black: bool,
+    kifu: Option<File>,
 }
 
 impl CsaPlayer {
@@ -15,6 +20,7 @@ impl CsaPlayer {
             client: CsaClient::connect(host),
             engine: AlphaBetaEngine::new(10, 10, true), // (depth, time_limit, use_pp)
             is_black: true,
+            kifu: None,
         }
     }
 
@@ -33,6 +39,13 @@ impl CsaPlayer {
         self.is_black = self.client.is_my_turn();
     }
 
+    pub fn set_save_kifu(&mut self, file_path: &str) {
+        self.kifu = match File::create(&Path::new(file_path)) {
+            Err(why) => panic!("couldn't create {}: {}", file_path, Error::description(&why)),
+            Ok(file) => Some(file),
+        }
+    }
+
     fn my_turn(&mut self) -> bool {
         let mv = self.engine.proceed_move();
         let turn_symbol = if self.is_black { "+" } else { "-" };
@@ -42,7 +55,12 @@ impl CsaPlayer {
             let mv_csa = format!("{}{}\n", turn_symbol, mv.to_csa_suffix(&self.engine.state));
             self.client.write(&mv_csa);
         }
-        println!("my move: \n{}\n", self.client.read());
+        let cmd = self.client.read();
+        match self.kifu {
+            Some(ref mut file) => file.write_all(cmd.as_bytes()),
+            None => Ok(()),
+        };
+        println!("my move: \n{}\n", cmd);
         if self.client.check_finish() {
             return true;
         }
@@ -52,6 +70,10 @@ impl CsaPlayer {
     fn opponent_turn(&mut self) -> bool {
         println!("waiting ...");
         let cmd = self.client.read();
+        match self.kifu {
+            Some(ref mut file) => file.write_all(cmd.as_bytes()),
+            None => Ok(()),
+        };
         println!("opponent's move: \n{}\n", cmd);
         if self.client.check_finish() {
             return true;
