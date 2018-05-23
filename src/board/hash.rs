@@ -22,7 +22,7 @@ pub const HASH_ENTRY_NONE: HashEntry = HashEntry {
 };
 
 // PCのメモリに応じて設定
-const HASH_SHIFT_SIZE: u32 = 24;
+const HASH_SHIFT_SIZE: u32 = 16;
 pub const HASH_TABLE_SIZE: usize = 1 << HASH_SHIFT_SIZE;
 lazy_static! {
     pub static ref HASH_KEY_MASK: u64 = 2u64.pow(HASH_SHIFT_SIZE) - 1;
