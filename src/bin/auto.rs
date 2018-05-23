@@ -1,14 +1,12 @@
 #[macro_use]
 extern crate lazy_static;
+extern crate girigiri;
 
 use std::time::Instant;
 
-mod csa;
-mod engine;
-mod board;
 // use engine::first_engine::*;
 // use engine::random_engine::*;
-use engine::alpha_beta_engine::*;
+use girigiri::engine::alpha_beta_engine::*;
 
 fn main() {
     let mut black_engine = AlphaBetaEngine::new(10, 10, true); // (depth, time_limit, use_pp)

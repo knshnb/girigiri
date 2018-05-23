@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "girigiri_rust"
+name = "girigiri"
 version = "0.1.0"
 dependencies = [
  "lazy_static 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",

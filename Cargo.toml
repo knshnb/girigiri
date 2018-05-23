@@ -6,23 +6,3 @@ authors = ["Kenshin Abe <abe.kenshin@gmail.com>"]
 [dependencies]
 rand = "0.3.0"
 lazy_static = "0.2"
-
-[[bin]]
-name = "auto"
-path = "src/auto.rs"
-
-[[bin]]
-name = "debug"
-path = "src/debug.rs"
-
-[[bin]]
-name = "learn"
-path = "src/learn.rs"
-
-[[bin]]
-name = "main"
-path = "src/main.rs"
-
-[[bin]]
-name = "floodgate"
-path = "src/floodgate.rs"

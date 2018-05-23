@@ -1,16 +1,14 @@
 #[macro_use]
 extern crate lazy_static;
+extern crate girigiri;
 
 use std::time::Instant;
 
-mod engine;
-mod board;
-mod csa;
 // use engine::first_engine::*;
 // use engine::random_engine::*;
-use engine::alpha_beta_engine::*;
-use board::state::*;
-use board::hash::*;
+use girigiri::engine::alpha_beta_engine::*;
+use girigiri::board::state::*;
+use girigiri::board::hash::*;
 use std::io::{self, Write};
 
 const LOOP_MAX: i32 = 2000;
