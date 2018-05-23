@@ -52,3 +52,13 @@ lazy_static! {
         m
     };
 }
+
+#[test]
+fn mask_is_fine() {
+    for i in 0..HASH_SHIFT_SIZE {
+        let bit: u64 = 1 << i;
+        assert!(*HASH_KEY_MASK & bit == bit, "HASH_KEY_MASK is too short");
+    }
+    let bit: u64 = 1 << (HASH_SHIFT_SIZE + 1);
+    assert!(*HASH_KEY_MASK & bit != bit, "HASH_KEY_MASK is too long");
+}
