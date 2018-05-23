@@ -1,5 +1,5 @@
 [package]
-name = "girigiri_rust"
+name = "girigiri"
 version = "0.1.0"
 authors = ["Kenshin Abe <abe.kenshin@gmail.com>"]
 
