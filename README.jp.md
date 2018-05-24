@@ -1,47 +1,45 @@
 # Girigiri
-Shogi AI written in Rust
+Rustで書かれた将棋AIです。
 
-[日本語バージョン](README.jp.md)
+## 使い方
 
-## Usage
-
-1. [Install Rust](https://www.rust-lang.org/en-US/install.html)
-2. Clone
+1. Rustのインストール(https://www.rust-lang.org/en-US/install.html)
+2. Girigiriのインストール
 
     ```
     $ git clone https://github.com/bknshn/girigiri
     ```
 
-3. Run
-- Run self match locally
+3. 実行
+- ローカルで自己対戦
 
     ```
     $ cargo run --bin auto --release
     ```
 
-- Battle in [floodgate](http://wdoor.c.u-tokyo.ac.jp/shogi/floodgate.html)
+- [floodgate](http://wdoor.c.u-tokyo.ac.jp/shogi/floodgate.html)での対局
 
     ```
     $ cargo run --bin floodgate --release
     ```
 
-- For [CSA](http://www.computer-shogi.org/protocol/tcp_ip_server_121.html) battle
+- [CSA](http://www.computer-shogi.org/protocol/tcp_ip_server_121.html)の大会用
 
     ```
     $ cargo run --bin main --release
     ```
 
-- Learn evaluation function
+- 評価関数の学習
 
     ```
     $ cargo run --bin learn --release
     ```
 
-- Debug
+- デバッグ
 
     ```
     $ cargo run --bin debug --release
     ```
 
-## Introduction
+## 入門
 [Rustで将棋AI入門 1-動かしてみる](https://qiita.com/bknshn/items/a989f223aa022c0c9c2a)
