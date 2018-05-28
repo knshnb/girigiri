@@ -134,6 +134,33 @@ impl Piece {
             _ => unreachable!(),
         }
     }
+    
+    pub fn usi_to_kind(c: char) -> usize {
+        match c {
+            'P' => 0,
+            'L' => 1,
+            'N' => 2,
+            'S' => 3,
+            'B' => 4,
+            'R' => 5,
+            'G' => 6,
+            'K' => 7,
+            _ => unreachable!(),
+        }
+    }
+    pub fn kind_to_usi(kind: usize) -> char {
+        match kind {
+            0 => 'P',
+            1 => 'L',
+            2 => 'N',
+            3 => 'S',
+            4 => 'B',
+            5 => 'R',
+            6 => 'G',
+            7 => 'K',
+            _ => unreachable!(),
+        }
+    }
 }
 
 impl fmt::Display for Piece {

@@ -476,17 +476,17 @@ impl State {
                         match n {
                             // pawn
                             0 => if ((self.color && to_i >= 1) || (!self.color && to_i <= 7)) && !self.pawn_checker[self.color as usize][to_j] {
-                                moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
+                                moves.push(Move::drop_encode(n, to_i as i8, to_j as i8));
                             },
                             // lance
                             1 => if ((self.color && to_i >= 1) || (!self.color && to_i <= 7)) {
-                                moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
+                                moves.push(Move::drop_encode(n, to_i as i8, to_j as i8));
                             },
                             // knight
                             2 => if ((self.color && to_i >= 2) || (!self.color && to_i <= 6)) {
-                                moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8));
+                                moves.push(Move::drop_encode(n, to_i as i8, to_j as i8));
                             },
-                            _ => moves.push(Move::drop_encode(n as u8, to_i as i8, to_j as i8)),
+                            _ => moves.push(Move::drop_encode(n, to_i as i8, to_j as i8)),
                         }
                     }
                 }

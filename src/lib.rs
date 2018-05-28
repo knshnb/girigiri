@@ -3,4 +3,5 @@ extern crate lazy_static;
 
 pub mod board;
 pub mod csa;
+pub mod usi;
 pub mod engine;

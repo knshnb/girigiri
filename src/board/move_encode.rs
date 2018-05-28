@@ -15,7 +15,7 @@ impl Move {
             to: to_i * 9 + to_j,
         }
     }
-    pub fn drop_encode(kind: u8, to_i: i8, to_j: i8) -> Move {
+    pub fn drop_encode(kind: usize, to_i: i8, to_j: i8) -> Move {
         Move {
             from: 81 + kind as i8,
             to: to_i * 9 + to_j,
@@ -28,12 +28,55 @@ impl Move {
         }
     }
 
+    pub fn from_usi(cmd: &str) -> Move {
+        let bytes = cmd.as_bytes();
+        let to_j = '9' as i8 - bytes[2] as i8;
+        let to_i = bytes[3] as i8 - 'a' as i8;
+        if bytes[1] == '*' as u8 {
+            // drop
+            let kind = Piece::usi_to_kind(bytes[0] as char);
+            return Move::drop_encode(kind, to_i, to_j);
+        } else {
+            let from_j = '9' as i8 - bytes[0] as i8;
+            let from_i = bytes[1] as i8 - 'a' as i8;
+            if bytes.len() == 6 {
+                // promote
+                return Move::promote_encode(from_i, from_j, to_i, to_j);
+            } else if bytes.len() == 5 {
+                // normal
+                return Move::normal_encode(from_i, from_j, to_i, to_j);
+            } else {
+                unreachable!();
+            }
+        }
+    }
+    pub fn to_usi(&self) -> String {
+        if self.is_drop() {
+            format!(
+                "{}*{}{}",
+                Piece::kind_to_usi(self.drop_kind()),
+                9 - self.to_j(),
+                ('a' as u8 + self.to_i() as u8) as char
+            )
+        } else {
+            let promote_suffix = if self.is_promote() { "+" } else { "" };
+            format!(
+                "{}{}{}{}{}",
+                9 - self.from_j(),
+                ('a' as u8 + self.from_i() as u8) as char,
+                9 - self.to_j(),
+                ('a' as u8 + self.to_i() as u8) as char,
+                promote_suffix
+            )
+        }
+    }
+
     pub fn from_csa(cmd: &str, state: &State) -> Move {
         let cmd_as_bytes = cmd.as_bytes();
         let to_j = b'9' - cmd_as_bytes[3];
         let to_i = cmd_as_bytes[4] - b'1';
         match &cmd[1..3] {
-            "00" => Move::drop_encode(csa_to_kind(&cmd[5..7]) as u8, to_i as i8, to_j as i8),
+            "00" => Move::drop_encode(csa_to_kind(&cmd[5..7]), to_i as i8, to_j as i8),
             _ => {
                 let from_j = b'9' - cmd_as_bytes[1];
                 let from_i = cmd_as_bytes[2] - b'1';

@@ -7,7 +7,8 @@ use std::time::{Duration, Instant};
 
 pub struct AlphaBetaEngine {
     pub state: State,
-    pub evaluator: Evaluator,
+    // because of pp problem
+    // pub evaluator: Evaluator,
     pub depth: u8,
     pub time_limit: Duration,
     pub instant: Instant,
@@ -18,7 +19,8 @@ impl AlphaBetaEngine {
     pub fn new(depth: u8, time_limit: u64, use_pp: bool) -> AlphaBetaEngine {
         AlphaBetaEngine {
             state: State::new(),
-            evaluator: Evaluator::new(),
+            // because of pp problem
+            // evaluator: Evaluator::new(),
             depth: depth,
             time_limit: Duration::new(time_limit, 0),
             instant: Instant::now(),
@@ -57,7 +59,30 @@ impl AlphaBetaEngine {
         }
 
         self.state.apply_move(&mv);
-        println!("PP score: {}\n", self.evaluator.eval(&self.state));
+        // because of pp problem
+        // println!("PP score: {}\n", self.evaluator.eval(&self.state));
+        mv
+    }
+
+    pub fn proceed_move_without_print(&mut self) -> Move {
+        self.instant = Instant::now();
+
+        let mut mv = NULL_MOVE;
+        for depth in 0..self.depth {
+            let start = Instant::now();
+            let eval = self.search(depth as u8);
+            if eval.is_none() {
+                break;
+            }
+            let eval = eval.unwrap();
+            unsafe {
+                mv = HASH_TABLE[(self.state.hash_key & *HASH_KEY_MASK) as usize].best_move;
+            }
+            let end = start.elapsed();
+            if depth > 0 && mv.is_null_move() { break; }
+        }
+
+        self.state.apply_move(&mv);
         mv
     }
 
@@ -77,8 +102,9 @@ impl AlphaBetaEngine {
 
         let mvpos = mv.to & 0b01111111;
         self.state.apply_move(&mv);
-        self.evaluator
-            .update(&self.state, (mvpos / 9) as usize, (mvpos % 9) as usize);
+        // because of pp problem
+        // self.evaluator
+        //    .update(&self.state, (mvpos / 9) as usize, (mvpos % 9) as usize);
         true
     }
 
