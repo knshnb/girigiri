@@ -1,7 +1,7 @@
 # Girigiri
 Rustで書かれた将棋AIです。
 
-## 使い方
+## インストール
 
 1. Rustのインストール(https://www.rust-lang.org/en-US/install.html)
 2. Girigiriのインストール
@@ -10,7 +10,20 @@ Rustで書かれた将棋AIです。
     $ git clone https://github.com/bknshn/girigiri
     ```
 
-3. 実行
+## 遊び方
+1. バイナリの作成
+
+    ```
+    $ cargo build --release
+    ```
+2. [将棋所](http://www.geocities.jp/shogidokoro/index.html)のインストール
+3. 将棋所を起動し、エンジンにgirigiri/target/release/usiを設定
+- LinuxやMacでは[Mono](https://www.mono-project.com/docs/getting-started/install/)を使う必要あり
+```
+mono /usr/local/bin/Shogidokoro/Shogidokoro.exe
+```
+
+## その他
 - ローカルで自己対戦
 
     ```

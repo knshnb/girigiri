@@ -3,7 +3,7 @@ Shogi AI written in Rust
 
 [日本語バージョン](README.jp.md)
 
-## Usage
+## Install
 
 1. [Install Rust](https://www.rust-lang.org/en-US/install.html)
 2. Clone
@@ -12,7 +12,20 @@ Shogi AI written in Rust
     $ git clone https://github.com/bknshn/girigiri
     ```
 
-3. Run
+## How to play
+1. Build
+
+    ```
+    $ cargo build --release
+    ```
+2. Install [将棋所(Shogidokoro)](http://www.geocities.jp/shogidokoro/index.html)
+3. Open Shogidokoro.exe and set girigiri/target/release/usi as engine
+- In Linux or Mac you need to use [Mono](https://www.mono-project.com/docs/getting-started/install/)
+```
+mono /usr/local/bin/Shogidokoro/Shogidokoro.exe
+```
+
+## Others
 - Run self match locally
 
     ```
