@@ -1,6 +1,5 @@
 use board::color::*;
 use board::state::*;
-use board::move_encode::*;
 use std::fs::*;
 use std::io::*;
 
@@ -160,7 +159,7 @@ impl Evaluator {
 
     pub fn update(&mut self, state: &State, pi: usize, pj: usize) {
         // 学習時、pは先手のみ
-        let mut p = ((*state).board[pi][pj].to_white(), pi, pj);
+        let p = ((*state).board[pi][pj].to_white(), pi, pj);
         let (mut mine, mut yours) = (Vec::new(), Vec::new());
         for i in 0..9 {
             for j in 0..9 {

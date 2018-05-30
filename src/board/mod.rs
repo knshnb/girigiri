@@ -10,3 +10,4 @@ pub mod hand;
 pub mod hash;
 pub mod past_captured_piece;
 pub mod static_search;
+pub mod position;

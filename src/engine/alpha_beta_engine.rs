@@ -2,7 +2,6 @@ use board::state::*;
 use board::alpha_beta::*;
 use board::move_encode::*;
 use board::hash::*;
-use board::eval::*;
 use std::time::{Duration, Instant};
 
 pub struct AlphaBetaEngine {
@@ -65,20 +64,15 @@ impl AlphaBetaEngine {
     }
 
     pub fn proceed_move_without_print(&mut self) -> Move {
-        self.instant = Instant::now();
-
         let mut mv = NULL_MOVE;
         for depth in 0..self.depth {
-            let start = Instant::now();
             let eval = self.search(depth as u8);
             if eval.is_none() {
                 break;
             }
-            let eval = eval.unwrap();
             unsafe {
                 mv = HASH_TABLE[(self.state.hash_key & *HASH_KEY_MASK) as usize].best_move;
             }
-            let end = start.elapsed();
             if depth > 0 && mv.is_null_move() { break; }
         }
 
@@ -100,7 +94,7 @@ impl AlphaBetaEngine {
         // println!("depth: {}, eval: {}, move: ", depth, eval);
         // self.state.print_expectation(depth);
 
-        let mvpos = mv.to & 0b01111111;
+        // let mvpos = mv.to & 0b01111111;
         self.state.apply_move(&mv);
         // because of pp problem
         // self.evaluator

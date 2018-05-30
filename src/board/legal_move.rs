@@ -479,11 +479,11 @@ impl State {
                                 moves.push(Move::drop_encode(n, to_i as i8, to_j as i8));
                             },
                             // lance
-                            1 => if ((self.color && to_i >= 1) || (!self.color && to_i <= 7)) {
+                            1 => if (self.color && to_i >= 1) || (!self.color && to_i <= 7) {
                                 moves.push(Move::drop_encode(n, to_i as i8, to_j as i8));
                             },
                             // knight
-                            2 => if ((self.color && to_i >= 2) || (!self.color && to_i <= 6)) {
+                            2 => if (self.color && to_i >= 2) || (!self.color && to_i <= 6) {
                                 moves.push(Move::drop_encode(n, to_i as i8, to_j as i8));
                             },
                             _ => moves.push(Move::drop_encode(n, to_i as i8, to_j as i8)),
