@@ -8,29 +8,29 @@ type PPsType = [[[[f32; 17]; 9]; 15]; 15];
 type PPoType = [[[[f32; 17]; 17]; 15]; 15];
 
 pub fn read_pps() -> PPsType {
-    let mut f = File::open("eval_bin/pps.bin").unwrap();
+    let mut f = File::open("eval_bin/pps.bin").expect("Cannot open pps");
     let mut buf = [0; 17 * 9 * 15 * 15 * 4];
-    f.read_exact(&mut buf).unwrap();
+    f.read_exact(&mut buf).expect("Cannot read pps");
     unsafe { ::std::mem::transmute::<[u8; 17 * 9 * 15 * 15 * 4], PPsType>(buf) }
 }
 
 pub fn read_ppo() -> PPoType {
-    let mut f = File::open("eval_bin/ppo.bin").unwrap();
+    let mut f = File::open("eval_bin/ppo.bin").expect("Cannot open ppo");
     let mut buf = [0; 17 * 17 * 15 * 15 * 4];
-    f.read_exact(&mut buf).unwrap();
+    f.read_exact(&mut buf).expect("Cannot read ppo");
     unsafe { ::std::mem::transmute::<[u8; 17 * 17 * 15 * 15 * 4], PPoType>(buf) }
 }
 
 pub fn write_pps(pps: &mut PPsType) {
-    let mut f = File::create("eval_bin/pps.bin").unwrap();
+    let mut f = File::create("eval_bin/pps.bin").expect("Cannot create pps");
     let pps = unsafe { ::std::mem::transmute::<PPsType, [u8; 17 * 9 * 15 * 15 * 4]>(*pps) };
-    f.write_all(&pps[..]).unwrap();
+    f.write_all(&pps[..]).expect("Cannot write in pps");
 }
 
 pub fn write_ppo(ppo: &mut PPoType) {
-    let mut f = File::create("eval_bin/ppo.bin").unwrap();
+    let mut f = File::create("eval_bin/ppo.bin").expect("Cannot create ppo");
     let ppo = unsafe { ::std::mem::transmute::<PPoType, [u8; 17 * 17 * 15 * 15 * 4]>(*ppo) };
-    f.write_all(&ppo[..]).unwrap();
+    f.write_all(&ppo[..]).expect("Cannot write in ppo");
 }
 
 pub const PIECE_TO_WEIGHT: [i32; 32] = [
