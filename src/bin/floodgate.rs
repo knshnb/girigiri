@@ -2,7 +2,6 @@ extern crate lazy_static;
 extern crate girigiri;
 
 use girigiri::csa::player::*;
-use std::{thread, time};
 
 const USERNAME: &str = "girigiri";
 const PASSWORD: &str = "floodgate-300-10F,hoge";
