@@ -102,10 +102,7 @@ impl AlphaBetaEngine {
         true
     }
 
-    pub fn randomize_state(&mut self) {
-        self.state.randomize();
-    }
-    pub fn is_lose(&self) -> bool {
-        self.state.is_lose()
-    }
+    // pub fn randomize_state(&mut self) {
+    //     self.state.randomize();
+    // }
 }
