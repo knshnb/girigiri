@@ -89,6 +89,10 @@ impl Piece {
         Piece::to_piece((self as isize) & !BLACK_MASK)
     }
 
+    pub fn is(self, piece: Piece) -> bool {
+        self.to_white() == piece
+    }
+
     pub fn is_promoted(self) -> bool {
         ((self as isize) & PROMOTED_MASK) == PROMOTED_MASK
     }

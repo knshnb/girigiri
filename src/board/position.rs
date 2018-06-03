@@ -142,8 +142,12 @@ impl Position {
                 if self.row() >= 7 || self.column() == 8 { None } else { Some(self + 19) },
         }
     }
-    pub fn enemy_line(self, is_black: bool) -> bool {
-        if is_black { self.row() <= 2 } else { self.row() >= 6 }
+    pub fn last_lines(self, is_black: bool, num: usize) -> bool {
+        if is_black {
+            self.row() < num
+        } else {
+            self.row() > 8 - num
+        }
     }
 }
 

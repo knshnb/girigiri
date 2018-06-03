@@ -25,8 +25,13 @@ impl State {
                 if next.is_none() { continue; }
                 let to = next.unwrap();
                 if self.board[to].is_mine(self.color) { continue; }
-                moves.push(Move::normal_encode(from, to));
-                if piece.can_promote() && (from.enemy_line(self.color) || to.enemy_line(self.color)) {
+                // 歩、香車、桂馬：行き所のない指し手は生成しない
+                if !((piece.is(Piece::pawn) || piece.is(Piece::lance)) && to.last_lines(self.color, 1)) &&
+                    !(piece.is(Piece::knight) && to.last_lines(self.color, 2)) { 
+                    moves.push(Move::normal_encode(from, to));
+                }
+                // last3段目に入れば成れる
+                if piece.can_promote() && (from.last_lines(self.color, 3) || to.last_lines(self.color, 3)) {
                     moves.push(Move::promote_encode(from, to));
                 }
             }
@@ -38,8 +43,12 @@ impl State {
                     if next.is_none() { break; }
                     to = next.unwrap();
                     if self.board[to].is_mine(self.color) { break; }
-                    moves.push(Move::normal_encode(from, to));
-                    if piece.can_promote() && (from.enemy_line(self.color) || to.enemy_line(self.color)) {
+                    // 香車：行き所のない指し手は生成しない
+                    if !(piece.is(Piece::lance) && to.last_lines(self.color, 1)) {
+                        moves.push(Move::normal_encode(from, to));
+                    }
+                    // last3段目に入れば成れる
+                    if piece.can_promote() && (from.last_lines(self.color, 3) || to.last_lines(self.color, 3)) {
                         moves.push(Move::promote_encode(from, to));
                     }
                     if self.board[to] != Piece::null { break; }
@@ -56,6 +65,8 @@ impl State {
             if !self.hand[self.color as usize].own(kind) { continue; }
             for &to in Position::variants() {
                 if self.board[to] != Piece::null { continue; }
+                // 二歩判定
+                if kind == 0 && self.pawn_checker[self.color as usize][to.column()] { continue; }
                 moves.push(Move::drop_encode(kind, to));
             }
         }
