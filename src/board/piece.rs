@@ -59,11 +59,10 @@ impl Piece {
     }
 
     pub fn new(kind: usize, is_black: bool) -> Piece {
-        let x = if is_black {
-            kind as isize | BLACK_MASK
-        } else {
-            kind as isize
-        };
+        let mut x = kind as isize;
+        if is_black { x |= BLACK_MASK; }
+        // 金、王の場合
+        if kind == 6 || kind == 7 { x |= PROMOTED_MASK; }
         Piece::to_piece(x)
     }
 
