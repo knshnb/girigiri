@@ -1,5 +1,6 @@
 use board::color::*;
-use std::fmt;
+use board::movable::*;
+use std::{ops, fmt};
 
 // [is_black, is_promoted, kind(3 bits)]
 const BLACK_MASK: isize = 0b10000;
@@ -22,8 +23,8 @@ pub enum Piece {
     Horse = 4 | PROMOTED_MASK | BLACK_MASK,
     Rook = 5 | BLACK_MASK,
     Dragon = 5 | PROMOTED_MASK | BLACK_MASK,
-    Gold = 6 | BLACK_MASK,
-    King = 7 | BLACK_MASK,
+    Gold = 6 | PROMOTED_MASK | BLACK_MASK,
+    King = 7 | PROMOTED_MASK | BLACK_MASK,
 
     // white's pieces
     pawn = 0,
@@ -38,10 +39,18 @@ pub enum Piece {
     horse = 4 | PROMOTED_MASK,
     rook = 5,
     dragon = 5 | PROMOTED_MASK,
-    gold = 6,
-    king = 7,
+    gold = 6 | PROMOTED_MASK,
+    king = 7 | PROMOTED_MASK,
 
-    null = 7 | PROMOTED_MASK, // in order to keep kind within 3 bits
+    null = 7, // in order to keep kind within 3 bits
+}
+
+// for SHORT_MOVABLE, LONG_MOVABLE
+impl ops::Index<Piece> for [Vec<Direction>] {
+    type Output = Vec<Direction>;
+    fn index(&self, piece: Piece) -> &Vec<Direction> {
+        &self[piece as usize]
+    }
 }
 
 impl Piece {
@@ -50,11 +59,10 @@ impl Piece {
     }
 
     pub fn new(kind: usize, is_black: bool) -> Piece {
-        let x = if is_black {
-            kind as isize | BLACK_MASK
-        } else {
-            kind as isize
-        };
+        let mut x = kind as isize;
+        if is_black { x |= BLACK_MASK; }
+        // 金、王の場合
+        if kind == 6 || kind == 7 { x |= PROMOTED_MASK; }
         Piece::to_piece(x)
     }
 
@@ -68,14 +76,30 @@ impl Piece {
         }
     }
 
+    pub fn is_mine(self, is_black: bool) -> bool {
+        if is_black {
+            self.whose() == Color::Black
+        } else {
+            self.whose() == Color::White
+        }
+    }
+
     pub fn to_white(self) -> Piece {
         Piece::to_piece((self as isize) & !BLACK_MASK)
+    }
+
+    pub fn is(self, piece: Piece) -> bool {
+        self.to_white() == piece
     }
 
     pub fn is_promoted(self) -> bool {
         ((self as isize) & PROMOTED_MASK) == PROMOTED_MASK
     }
 
+    pub fn can_promote(self) -> bool {
+        ((self as isize) & PROMOTED_MASK) == 0
+    }
+    
     pub fn promote(self) -> Piece {
         Piece::to_piece((self as isize) | PROMOTED_MASK)
     }
@@ -101,6 +125,51 @@ impl Piece {
             Piece::horse => "UM",
             Piece::dragon => "RY",
             _ => unreachable!(),
+        }
+    }
+
+    fn sfen_sub(c: char) -> Piece {
+        use self::Piece::*;
+        match c {
+            'P' => Pawn,
+            'L' => Lance,
+            'N' => Knight,
+            'S' => Silver,
+            'B' => Bishop,
+            'R' => Rook,
+            'G' => Gold,
+            'K' => King,
+
+            'p' => pawn,
+            'l' => lance,
+            'n' => knight,
+            's' => silver,
+            'b' => bishop,
+            'r' => rook,
+            'g' => gold,
+            'k' => king,
+            _ => unreachable!(),
+        }
+    }
+    pub fn from_sfen(s: &str) -> Piece {
+        if s.as_bytes()[0] as char == '+' {
+            Piece::sfen_sub(s.as_bytes()[1] as char).promote()
+        } else {
+            Piece::sfen_sub(s.as_bytes()[0] as char)
+        }
+    }
+
+    pub fn sfen_to_kind(c: char) -> (bool, usize) {
+        match c {
+            'P' => (true, 0),
+            'L' => (true, 1),
+            'N' => (true, 2),
+            'S' => (true, 3),
+            'B' => (true, 4),
+            'R' => (true, 5),
+            'G' => (true, 6),
+            'K' => (true, 7),
+            lower => (false, Piece::sfen_to_kind((lower as u8 - 32) as char).1),
         }
     }
 
@@ -195,4 +264,10 @@ impl fmt::Debug for Piece {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self)
     }
+}
+
+#[test]
+fn sfen_to_kind_works() {
+    assert_eq!((true, 2), Piece::sfen_to_kind('N'));
+    assert_eq!((false, 3), Piece::sfen_to_kind('s'));
 }

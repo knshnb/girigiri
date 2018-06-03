@@ -1,6 +1,5 @@
 use engine::alpha_beta_engine::*;
 use usi::client::*;
-use board::move_encode::*;
 
 pub struct UsiPlayer {
     pub client: UsiClient,

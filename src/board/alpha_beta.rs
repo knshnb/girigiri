@@ -2,7 +2,6 @@ use std::i32;
 use std::cmp;
 
 use board::move_encode::*;
-use board::state::*;
 use board::static_search::*;
 use board::hash::*;
 use engine::alpha_beta_engine::*;
