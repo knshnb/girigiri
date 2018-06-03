@@ -48,11 +48,10 @@ impl CsaPlayer {
 
     fn my_turn(&mut self) -> bool {
         let mv = self.engine.proceed_move();
-        let turn_symbol = if self.is_black { "+" } else { "-" };
         if mv.is_null_move() {
             self.client.resign();
         } else {
-            let mv_csa = format!("{}{}\n", turn_symbol, mv.to_csa_suffix(&self.engine.state));
+            let mv_csa = format!("{}\n", mv.to_csa(&self.engine.state));
             self.client.write(&mv_csa);
         }
         let cmd = self.client.read();

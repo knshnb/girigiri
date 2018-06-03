@@ -103,22 +103,26 @@ impl Move {
         }
     }
 
-    // without first "+" or "-" (referring to color)
-    pub fn to_csa_suffix(self, state: &State) -> String {
+    // Use this function after applying move!!
+    pub fn to_csa(self, state: &State) -> String {
+        // 呼ばれるのがapply_moveをした後なので逆になっている
+        let turn_symbol = if state.color { "-" } else { "+" };
         let to = format!("{}{}",
             9 - self.to_pos().column(),
-            self.to_pos().column() + 1,
+            self.to_pos().row() + 1,
         );
         if self.is_drop() {
             format!(
-                "00{}{}",
+                "{}00{}{}",
+                turn_symbol,
                 to,
                 Piece::kind_to_csa(self.drop_kind())
             )
         } else {
             let piece = (*state).board[self.to_pos()];
             format!(
-                "{}{}{}{}",
+                "{}{}{}{}{}",
+                turn_symbol,
                 9 - self.from_pos().column(),
                 self.from_pos().row() + 1,
                 to,
@@ -161,4 +165,14 @@ fn usi_works() {
     assert_eq!(usi1, Move::from_usi(usi1).to_usi());
     assert_eq!(usi2, Move::from_usi(usi2).to_usi());
     assert_eq!(usi3, Move::from_usi(usi3).to_usi());
+}
+
+#[test]
+fn csa_works() {
+    let state = State::new();
+    let csa1 = "-3233FU";
+    let csa2 = "-0033FU";
+    println!("{:?}", Move::from_csa(csa1, &state));
+    assert_eq!(csa1, Move::from_csa(csa1, &state).to_csa(&state));
+    assert_eq!(csa2, Move::from_csa(csa2, &state).to_csa(&state));
 }
