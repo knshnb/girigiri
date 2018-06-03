@@ -43,6 +43,58 @@ impl State {
         }
     }
 
+    pub fn set_sfen(&mut self, sfen: &str) {
+        let sfen: Vec<&str> = sfen.split(' ').collect();
+        // board
+        let mut pos = Position::P91;
+        for row in sfen[0].split('/').collect::<Vec<&str>>() {
+            let bytes = row.as_bytes();
+            let mut x = 0;
+            while x < bytes.len() {
+                if '1' as u8 <= bytes[x] && bytes[x] <= '9' as u8 {
+                    for _ in 0..(bytes[x] - '0' as u8) {
+                        self.board[pos] = Piece::null;
+                        pos = pos + 1;
+                    }
+                    x += 1;
+                } else {
+                    if bytes[x] as char == '+' {
+                        self.board[pos] = Piece::from_sfen(&row[x..x+2]);
+                        x += 2;
+                    } else {
+                        self.board[pos] = Piece::from_sfen(&row[x..x+1]);
+                        x += 1;
+                    }
+                    pos = pos + 1;
+                }
+            }
+        }
+        // turn
+        match sfen[1] {
+            "b" => { self.color = true; },
+            "w" => { self.color = false; },
+            _ => unimplemented!(),
+        }
+        // hand
+        if sfen[2] == "-" { return; }
+        let bytes = sfen[2].as_bytes();
+        let mut x = 0;
+        while x < bytes.len() {
+            if '1' as u8 <= bytes[x] && bytes[x] <= '9' as u8 {
+                let (is_black, kind) = Piece::sfen_to_kind(bytes[x + 1] as char);
+                for _ in 0..(bytes[x] - '0' as u8) {
+                    self.hand[is_black as usize].add(kind);
+                }
+                x += 2;
+            } else {
+                let (is_black, kind) = Piece::sfen_to_kind(bytes[x] as char);
+                self.hand[is_black as usize].add(kind);
+                x += 1;
+            }
+        }
+    }
+
+
     // pub fn valid(ps: &[Piece; 81]) -> bool {
     //     /*
     //     (1. 二歩になっていない)
@@ -349,4 +401,10 @@ impl fmt::Debug for State {
         }
         Ok(())
     }
+}
+
+#[test]
+fn can_read_sfen() {
+    let mut state = State::new();
+    state.set_sfen("l3kgsnl/2n1g4/p3p1+Ppb/2P6/9/2p6/PP1PPP1PP/1B2K2R+p/L1GS1GS2 w 2NLPrs3p 1");
 }

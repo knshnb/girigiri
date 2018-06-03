@@ -128,6 +128,51 @@ impl Piece {
         }
     }
 
+    fn sfen_sub(c: char) -> Piece {
+        use self::Piece::*;
+        match c {
+            'P' => Pawn,
+            'L' => Lance,
+            'N' => Knight,
+            'S' => Silver,
+            'B' => Bishop,
+            'R' => Rook,
+            'G' => Gold,
+            'K' => King,
+
+            'p' => pawn,
+            'l' => lance,
+            'n' => knight,
+            's' => silver,
+            'b' => bishop,
+            'r' => rook,
+            'g' => gold,
+            'k' => king,
+            _ => unreachable!(),
+        }
+    }
+    pub fn from_sfen(s: &str) -> Piece {
+        if s.as_bytes()[0] as char == '+' {
+            Piece::sfen_sub(s.as_bytes()[1] as char).promote()
+        } else {
+            Piece::sfen_sub(s.as_bytes()[0] as char)
+        }
+    }
+
+    pub fn sfen_to_kind(c: char) -> (bool, usize) {
+        match c {
+            'P' => (true, 0),
+            'L' => (true, 1),
+            'N' => (true, 2),
+            'S' => (true, 3),
+            'B' => (true, 4),
+            'R' => (true, 5),
+            'G' => (true, 6),
+            'K' => (true, 7),
+            lower => (false, Piece::sfen_to_kind((lower as u8 - 32) as char).1),
+        }
+    }
+
     pub fn kind(self) -> usize {
         ((self as isize) & KIND_MASK) as usize
     }
@@ -219,4 +264,10 @@ impl fmt::Debug for Piece {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self)
     }
+}
+
+#[test]
+fn sfen_to_kind_works() {
+    assert_eq!((true, 2), Piece::sfen_to_kind('N'));
+    assert_eq!((false, 3), Piece::sfen_to_kind('s'));
 }
