@@ -107,42 +107,42 @@ impl Position {
         0, 1, 2, 3, 4, 5, 6, 7, 8,
     ];
 
-    pub fn row(&self) -> usize {
-        Position::ROW[*self]
+    pub fn row(self) -> usize {
+        Position::ROW[self]
     }
-    pub fn column(&self) -> usize {
-        Position::COLUMN[*self]
+    pub fn column(self) -> usize {
+        Position::COLUMN[self]
     }
 
-    pub fn step(&self, dir: Direction) -> Option<Position> {
+    pub fn step(self, dir: Direction) -> Option<Position> {
         match dir {
             Direction::UpLeft =>
-                if self.column() == 0 || self.row() == 0 { None } else { Some(*self - 10) },
+                if self.column() == 0 || self.row() == 0 { None } else { Some(self - 10) },
             Direction::Up =>
-                if self.row() == 0 { None } else { Some(*self - 9) },
+                if self.row() == 0 { None } else { Some(self - 9) },
             Direction::UpRight =>
-                if self.column() == 8 || self.row() == 0 { None } else { Some(*self - 8) },
+                if self.column() == 8 || self.row() == 0 { None } else { Some(self - 8) },
             Direction::Left =>
-                if self.column() == 0 { None } else { Some(*self - 1) },
+                if self.column() == 0 { None } else { Some(self - 1) },
             Direction::Right =>
-                if self.column() == 8 { None } else { Some(*self + 1) },
+                if self.column() == 8 { None } else { Some(self + 1) },
             Direction::DownLeft =>
-                if self.column() == 0 || self.row() == 8 { None } else { Some(*self + 8) },
+                if self.column() == 0 || self.row() == 8 { None } else { Some(self + 8) },
             Direction::Down =>
-                if self.row() == 8 { None } else { Some(*self + 9) },
+                if self.row() == 8 { None } else { Some(self + 9) },
             Direction::DownRight =>
-                if self.column() == 0 || self.row() == 8 { None } else { Some(*self + 10) },
+                if self.column() == 0 || self.row() == 8 { None } else { Some(self + 10) },
             Direction::UpUpLeft =>
-                if self.row() <= 1 || self.column() == 0 { None } else { Some(*self - 19) },
+                if self.row() <= 1 || self.column() == 0 { None } else { Some(self - 19) },
             Direction::UpUpRight =>
-                if self.row() <= 1 || self.column() == 8 { None } else { Some(*self - 17) },
+                if self.row() <= 1 || self.column() == 8 { None } else { Some(self - 17) },
             Direction::DownDownLeft =>
-                if self.row() >= 7 || self.column() == 0 { None } else { Some(*self + 17) },
+                if self.row() >= 7 || self.column() == 0 { None } else { Some(self + 17) },
             Direction::DownDownRight =>
-                if self.row() >= 7 || self.column() == 8 { None } else { Some(*self + 19) },
+                if self.row() >= 7 || self.column() == 8 { None } else { Some(self + 19) },
         }
     }
-    pub fn enemy_line(&self, is_black: bool) -> bool {
+    pub fn enemy_line(self, is_black: bool) -> bool {
         if is_black { self.row() <= 2 } else { self.row() >= 6 }
     }
 }
