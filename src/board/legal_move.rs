@@ -25,14 +25,15 @@ impl State {
                 if next.is_none() { continue; }
                 let to = next.unwrap();
                 if self.board[to].is_mine(self.color) { continue; }
-                // 歩、香車、桂馬：行き所のない指し手は生成しない
-                if !((piece.is(Piece::pawn) || piece.is(Piece::lance)) && to.last_lines(self.color, 1)) &&
-                    !(piece.is(Piece::knight) && to.last_lines(self.color, 2)) { 
-                    moves.push(Move::normal_encode(from, to));
-                }
+                // オーダリングのために成りの手を先に生成
                 // last3段目に入れば成れる
                 if piece.can_promote() && (from.last_lines(self.color, 3) || to.last_lines(self.color, 3)) {
                     moves.push(Move::promote_encode(from, to));
+                }
+                // 成らない指し手（歩、香車、桂馬：行き所のない指し手は生成しない）
+                if !((piece.is(Piece::pawn) || piece.is(Piece::lance)) && to.last_lines(self.color, 1)) &&
+                    !(piece.is(Piece::knight) && to.last_lines(self.color, 2)) { 
+                    moves.push(Move::normal_encode(from, to));
                 }
             }
             // long
@@ -43,13 +44,14 @@ impl State {
                     if next.is_none() { break; }
                     to = next.unwrap();
                     if self.board[to].is_mine(self.color) { break; }
-                    // 香車：行き所のない指し手は生成しない
-                    if !(piece.is(Piece::lance) && to.last_lines(self.color, 1)) {
-                        moves.push(Move::normal_encode(from, to));
-                    }
+                    // オーダリングのために成りの手を先に生成
                     // last3段目に入れば成れる
                     if piece.can_promote() && (from.last_lines(self.color, 3) || to.last_lines(self.color, 3)) {
                         moves.push(Move::promote_encode(from, to));
+                    }
+                    // 成らない指し手（香車：行き所のない指し手は生成しない）
+                    if !(piece.is(Piece::lance) && to.last_lines(self.color, 1)) {
+                        moves.push(Move::normal_encode(from, to));
                     }
                     if self.board[to] != Piece::null { break; }
                 }
