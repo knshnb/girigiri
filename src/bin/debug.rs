@@ -15,7 +15,6 @@ fn main() {
         io::stdin()
             .read_line(&mut input)
             .expect("failed to read line");
-        let bytes = input.as_bytes();
         if input == "undo\n" {
             // undo
             state.undo_move(&mv);
