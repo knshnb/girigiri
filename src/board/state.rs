@@ -339,6 +339,32 @@ impl State {
         }
         println!("");
     }
+
+    // self.legal_move()をするのにimmutableな参照が必要なため、下で定義するfmt::Debugの外に出している
+    pub fn print_legal_moves(&mut self) {
+        let legal_moves = self.legal_move();
+        println!("legal move: {}", legal_moves.len());
+        for mv in legal_moves {
+            if self.color {
+                print!("▲");
+            } else {
+                print!("△");
+            }
+            print!("{}{}", 9 - mv.to_pos().column(), 1 + mv.to_pos().row());
+            if mv.is_drop() {
+                print!("{}打", Piece::new(mv.drop_kind(), self.color));
+            } else {
+                print!(
+                    "{}",
+                    self.board[mv.from_pos()]
+                );
+                if mv.is_promote() {
+                    print!("成");
+                }
+            }
+        }
+        println!("");
+    }
 }
 
 impl fmt::Display for State {
@@ -380,29 +406,6 @@ impl fmt::Debug for State {
         writeln!(f, "weight: {}", self.weight)?;
         writeln!(f, "black's pawn checker: {:?}", self.pawn_checker[1])?;
         writeln!(f, "white's pawn checker: {:?}", self.pawn_checker[0])?;
-        let legal_moves = self.legal_move();
-        writeln!(f, "legal move: {}", legal_moves.len())?;
-
-        for mv in legal_moves {
-            if self.color {
-                write!(f, "▲")?;
-            } else {
-                write!(f, "△")?;
-            }
-            write!(f, "{}{}", 9 - mv.to_pos().column(), 1 + mv.to_pos().row())?;
-            if mv.is_drop() {
-                write!(f, "{}打", Piece::new(mv.drop_kind(), self.color))?;
-            } else {
-                write!(
-                    f,
-                    "{}",
-                    self.board[mv.from_pos()]
-                )?;
-                if mv.is_promote() {
-                    write!(f, "成")?;
-                }
-            }
-        }
         Ok(())
     }
 }

@@ -10,11 +10,6 @@ fn sub_static_search(ref mut state: &mut State, to: Position) -> i32 {
     for mv in moves {
         if mv.to_pos() == to {
             state.apply_move(&mv);
-            if state.opponent_king_is_capturable() {
-                // 王手無視
-                state.undo_move(&mv);
-                continue;
-            }
             best_value = cmp::max(best_value, -sub_static_search(state, to));
             state.undo_move(&mv);
         }
