@@ -345,10 +345,14 @@ impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         writeln!(f, "{}th", self.nth)?;
         writeln!(f, "color: {}", if self.color { "black" } else { "white" })?;
+        for col in 0..9 {
+            write!(f, " {} ", 9 - col)?;
+        }
+        writeln!(f, "")?;
         for &pos in Position::variants() {
             write!(f, "{}", self.board[pos])?;
             if pos.column() == 8 {
-                writeln!(f, "")?;
+                writeln!(f, " {}", ('a' as u8 + pos.row() as u8) as char)?;
             }
         }
         write!(f, "先手の持駒: ")?;
