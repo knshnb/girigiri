@@ -16,9 +16,8 @@ fn main() {
             .read_line(&mut input)
             .expect("failed to read line");
         let bytes = input.as_bytes();
-        if bytes.len() == 2 {
+        if input == "undo\n" {
             // undo
-            state.print_move(&mv);
             state.undo_move(&mv);
         } else {
             mv = Move::from_usi(&input);
