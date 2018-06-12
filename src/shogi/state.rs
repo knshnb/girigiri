@@ -1,10 +1,10 @@
-use board::move_encode::*;
-use board::piece::*;
-use board::hand::*;
-use board::hash::*;
-use board::eval::*;
-use board::past_captured_piece::*;
-use board::position::*;
+use shogi::move_encode::*;
+use shogi::piece::*;
+use shogi::hand::*;
+use shogi::hash::*;
+use shogi::past_captured_piece::*;
+use shogi::position::*;
+use engine::alphabeta::eval::*;
 use std::fmt;
 
 extern crate rand;
@@ -173,12 +173,19 @@ impl State {
     pub fn print_expectation(&mut self, depth: u8) {
         let mut state = self.clone();
         for _ in 0..depth {
-            let mv;
+            let entry;
             unsafe {
-                mv = HASH_TABLE[(state.hash_key & *HASH_KEY_MASK) as usize].move_value.mv;
+                entry = HASH_TABLE[(state.hash_key & *HASH_KEY_MASK) as usize];
             }
-            state.print_move(&mv);
-            state.apply_move(&mv);
+            if state.hash_key == entry.hash_key && state.color == entry.color {
+                // ハッシュテーブルの値が上書きされていない
+                let mv = entry.move_value.mv;
+                state.print_move(&mv);
+                state.apply_move(&mv);
+            } else {
+                println!("Hash data is replaced.");
+                break;
+            }
         }
     }
 

@@ -3,8 +3,8 @@ extern crate girigiri;
 
 use std::io;
 
-use girigiri::board::state::State;
-use girigiri::board::move_encode::*;
+use girigiri::shogi::state::State;
+use girigiri::shogi::move_encode::*;
 
 fn main() {
     let mut state = State::new();

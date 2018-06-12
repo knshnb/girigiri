@@ -2,7 +2,7 @@ extern crate rand;
 
 use self::rand::Rng;
 
-use board::state::*;
+use shogi::state::*;
 
 pub struct RandomEngine {
     state: State,

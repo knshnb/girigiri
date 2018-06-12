@@ -1,5 +1,5 @@
-use board::movable::*;
-use board::piece::*;
+use shogi::movable::*;
+use shogi::piece::*;
 use std::ops;
 use std::slice::Iter;
 

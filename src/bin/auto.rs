@@ -5,7 +5,7 @@ use std::time::Instant;
 
 // use engine::first_engine::*;
 // use engine::random_engine::*;
-use girigiri::engine::alpha_beta_engine::*;
+use girigiri::engine::alphabeta::controller::*;
 
 fn main() {
     let mut black_engine = AlphaBetaEngine::new(10, 10, true); // (depth, time_limit, use_pp)

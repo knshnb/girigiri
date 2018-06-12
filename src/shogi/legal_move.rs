@@ -1,8 +1,8 @@
-use board::state::*;
-use board::position::*;
-use board::move_encode::*;
-use board::movable::*;
-use board::piece::*;
+use shogi::state::*;
+use shogi::position::*;
+use shogi::move_encode::*;
+use shogi::movable::*;
+use shogi::piece::*;
 
 impl State {
     pub fn opponent_king_is_capturable(&mut self) -> bool {

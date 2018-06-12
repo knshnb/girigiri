@@ -1,4 +1,4 @@
-use board::state::*;
+use shogi::state::*;
 
 pub struct FirstEngine {
     state: State,

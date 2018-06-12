@@ -1,5 +1,5 @@
-use board::color::*;
-use board::movable::*;
+use shogi::color::*;
+use shogi::movable::*;
 use std::{ops, fmt};
 
 // [is_black, is_promoted, kind(3 bits)]

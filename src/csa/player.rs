@@ -1,6 +1,6 @@
-use engine::alpha_beta_engine::*;
+use engine::alphabeta::controller::*;
 use csa::client::*;
-use board::move_encode::*;
+use shogi::move_encode::*;
 use std::net::ToSocketAddrs;
 use std::fs::File;
 use std::path::Path;

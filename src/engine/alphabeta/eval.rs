@@ -1,5 +1,5 @@
-use board::color::*;
-use board::state::*;
+use shogi::color::*;
+use shogi::state::*;
 use std::fs::*;
 use std::io::*;
 

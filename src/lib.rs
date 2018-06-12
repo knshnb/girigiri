@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate lazy_static;
 
-pub mod board;
+pub mod shogi;
 pub mod csa;
 pub mod usi;
 pub mod engine;

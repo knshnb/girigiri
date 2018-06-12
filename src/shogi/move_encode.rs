@@ -1,6 +1,6 @@
-use board::piece::*;
-use board::state::*;
-use board::position::*;
+use shogi::piece::*;
+use shogi::state::*;
+use shogi::position::*;
 use csa::parser::*;
 
 const PROMOTE_MASK: i8 = 0b10000000;

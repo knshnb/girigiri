@@ -1,4 +1,4 @@
-use engine::alpha_beta_engine::*;
+use engine::alphabeta::controller::*;
 use usi::client::*;
 
 pub struct UsiPlayer {

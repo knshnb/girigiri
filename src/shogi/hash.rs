@@ -1,8 +1,46 @@
 extern crate rand;
 
+use std;
+use std::cmp::Ordering;
 use std::u64;
 use self::rand::Rng;
-use board::alpha_beta::*;
+use shogi::move_encode::*;
+
+// Moveと16ビットの評価値をまとめた合計32ビットの構造体
+#[derive(Debug, Clone, Copy, Eq)]
+pub struct MoveValue {
+    pub mv: Move,
+    pub value: i16,
+}
+
+impl Ord for MoveValue {
+    fn cmp(&self, other: &MoveValue) -> Ordering {
+        self.value.cmp(&other.value)
+    }
+}
+impl PartialOrd for MoveValue {
+    fn partial_cmp(&self, other: &MoveValue) ->  Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl PartialEq for MoveValue {
+    fn eq(&self, other: &MoveValue) ->  bool {
+        self.value == other.value
+    }
+}
+impl std::ops::Neg for MoveValue {
+    type Output = MoveValue;
+    fn neg(self) -> MoveValue {
+        MoveValue {
+            mv: self.mv,
+            value: -self.value,
+        }
+    }
+}
+pub const NULL_MOVE_VALUE: MoveValue = MoveValue {
+        mv: NULL_MOVE,
+        value: -(i16::max_value()),
+};
 
 #[derive(Copy, Clone)]
 pub struct HashEntry {

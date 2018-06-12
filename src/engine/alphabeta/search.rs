@@ -1,47 +1,10 @@
 use std::i16;
 use std::cmp;
-use std::cmp::Ordering;
-use std;
 
-use board::move_encode::*;
-use board::static_search::*;
-use board::hash::*;
-use engine::alpha_beta_engine::*;
-
-#[derive(Debug, Clone, Copy, Eq)]
-pub struct MoveValue {
-    pub mv: Move,
-    pub value: i16,
-}
-
-impl Ord for MoveValue {
-    fn cmp(&self, other: &MoveValue) -> Ordering {
-        self.value.cmp(&other.value)
-    }
-}
-impl PartialOrd for MoveValue {
-    fn partial_cmp(&self, other: &MoveValue) ->  Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-impl PartialEq for MoveValue {
-    fn eq(&self, other: &MoveValue) ->  bool {
-        self.value == other.value
-    }
-}
-impl std::ops::Neg for MoveValue {
-    type Output = MoveValue;
-    fn neg(self) -> MoveValue {
-        MoveValue {
-            mv: self.mv,
-            value: -self.value,
-        }
-    }
-}
-pub const NULL_MOVE_VALUE: MoveValue = MoveValue {
-        mv: NULL_MOVE,
-        value: -(i16::max_value()),
-};
+use shogi::move_encode::*;
+use shogi::hash::*;
+use engine::alphabeta::controller::*;
+use engine::alphabeta::static_search::*;
 
 // 時間切れの時はNone, それ以外はSome(MoveValue)を返す
 pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i16, beta: i16) -> Option<MoveValue> {

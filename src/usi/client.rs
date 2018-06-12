@@ -1,5 +1,5 @@
 use std::io;
-use board::move_encode::*;
+use shogi::move_encode::*;
 
 pub struct UsiClient {
     pub cmd: String,

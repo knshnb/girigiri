@@ -5,9 +5,9 @@ use std::time::Instant;
 
 // use engine::first_engine::*;
 // use engine::random_engine::*;
-use girigiri::engine::alpha_beta_engine::*;
-use girigiri::board::state::*;
-use girigiri::board::hash::*;
+use girigiri::engine::alphabeta::controller::*;
+use girigiri::shogi::state::*;
+use girigiri::shogi::hash::*;
 use std::io::{self, Write};
 
 const LOOP_MAX: i32 = 2000;

@@ -1,7 +1,7 @@
-use board::state::*;
-use board::alpha_beta::*;
-use board::move_encode::*;
-use board::hash::*;
+use shogi::state::*;
+use shogi::move_encode::*;
+use shogi::hash::*;
+use engine::alphabeta::search::*;
 use std::time::{Duration, Instant};
 
 pub struct AlphaBetaEngine {
@@ -45,7 +45,9 @@ impl AlphaBetaEngine {
             let move_value = next.unwrap();
             mv = move_value.mv;
             let end = start.elapsed();
-            println!("depth: {}, eval: {}, move: ", depth, move_value.value);
+            // 常に先手から見た評価値を出力
+            let value = if self.state.color { move_value.value } else { - move_value.value };
+            println!("depth: {}, eval: {}, move: ", depth, value);
             self.state.print_expectation(depth);
             println!(
                 "time: {}.{:03} sec\n",

@@ -1,8 +1,8 @@
 use std::i16;
 use std::cmp;
-use board::state::*;
-use board::eval::*;
-use board::position::*;
+use shogi::state::*;
+use shogi::position::*;
+use engine::alphabeta::eval::*;
 
 fn sub_static_search(ref mut state: &mut State, to: Position) -> i16 {
     let mut best_value = -i16::max_value();
@@ -15,11 +15,11 @@ fn sub_static_search(ref mut state: &mut State, to: Position) -> i16 {
                 state.undo_move(&mv);
                 continue;
             }
-            best_value = cmp::max(best_value, -sub_static_search(state, to));
+            best_value = cmp::max(best_value, sub_static_search(state, to));
             state.undo_move(&mv);
         }
     }
-    cmp::max(best_value, eval(&state))
+    -cmp::max(best_value, eval(&state))
 }
 
 pub fn static_search(ref mut state: &mut State) -> i16 {
@@ -33,7 +33,7 @@ pub fn static_search(ref mut state: &mut State) -> i16 {
                 state.undo_move(&mv);
                 continue;
             }
-            best_value = cmp::max(best_value, -sub_static_search(state, mv.to_pos()));
+            best_value = cmp::max(best_value, sub_static_search(state, mv.to_pos()));
             state.undo_move(&mv);
         }
     }
