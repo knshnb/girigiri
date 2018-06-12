@@ -1,37 +1,76 @@
-use std::i32;
+use std::i16;
 use std::cmp;
+use std::cmp::Ordering;
+use std;
 
 use board::move_encode::*;
 use board::static_search::*;
 use board::hash::*;
 use engine::alpha_beta_engine::*;
 
-pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, beta: i32) -> Option<i32> {
-    if engine.instant.elapsed() >= engine.time_limit {
-        return None;
+#[derive(Debug, Clone, Copy, Eq)]
+pub struct MoveValue {
+    pub mv: Move,
+    pub value: i16,
+}
+
+impl Ord for MoveValue {
+    fn cmp(&self, other: &MoveValue) -> Ordering {
+        self.value.cmp(&other.value)
     }
+}
+impl PartialOrd for MoveValue {
+    fn partial_cmp(&self, other: &MoveValue) ->  Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl PartialEq for MoveValue {
+    fn eq(&self, other: &MoveValue) ->  bool {
+        self.value == other.value
+    }
+}
+impl std::ops::Neg for MoveValue {
+    type Output = MoveValue;
+    fn neg(self) -> MoveValue {
+        MoveValue {
+            mv: self.mv,
+            value: -self.value,
+        }
+    }
+}
+pub const NULL_MOVE_VALUE: MoveValue = MoveValue {
+        mv: NULL_MOVE,
+        value: -(i16::max_value()),
+};
+
+// 時間切れの時はNone, それ以外はSome(MoveValue)を返す
+pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i16, beta: i16) -> Option<MoveValue> {
+    // 時間切れ
+    if engine.instant.elapsed() >= engine.time_limit { return None; }
     let mut first_move = NULL_MOVE;
+
+    // ハッシュテーブルを確認
     let entry;
     unsafe {
         entry = HASH_TABLE[(engine.state.hash_key & *HASH_KEY_MASK) as usize];
     }
     if engine.state.hash_key == entry.hash_key && engine.state.color == entry.color {
         if depth <= entry.remain_depth {
-            return Some(entry.value);
+            // 残り深さが深い場合は問答無用にその値を返す
+            return Some(entry.move_value);
         } else {
-            first_move = entry.best_move;
+            // 浅い深さの結果はオーダリングに使用
+            first_move = entry.move_value.mv;
         }
     }
 
-    let mut best_val = -(i32::max_value());
-    let mut best_move = NULL_MOVE;
+    let mut best = NULL_MOVE_VALUE;
     if depth == 0 {
-        best_val = static_search(&mut engine.state);
-        // if (engine.use_pp) {
-        //     best_val += (engine.evaluator.eval(&engine.state) * 0.005) as i32;
-        // }
+        // best.value = engine.state.weight;
+        best.value = static_search(&mut engine.state);
     } else {
         let mut moves = engine.state.legal_move();
+        // 浅い探索での最善手を先頭に並び変える
         if first_move != NULL_MOVE {
             for mv_index in 0..moves.len() {
                 if moves[mv_index] == first_move {
@@ -49,34 +88,34 @@ pub fn sub_search(ref mut engine: &mut AlphaBetaEngine, depth: u8, alpha: i32, b
                 engine.state.undo_move(&mv);
                 continue;
             }
-            let new_val = sub_search(engine, depth - 1, -beta, -cmp::max(alpha, best_val));
+            let new = sub_search(engine, depth - 1, -beta, -cmp::max(alpha, best.value));
             engine.state.undo_move(&mv);
-            if new_val.is_none() {
-                return None;
+            // 時間切れ
+            if new.is_none() { return None; }
+            let new = -(new.unwrap());
+            if new >= best {
+                best = MoveValue {
+                    mv: mv,
+                    value: new.value,
+                }
             }
-            let new_val = -(new_val.unwrap());
-            if new_val >= best_val {
-                best_val = new_val;
-                best_move = mv;
-            }
-            if best_val >= beta {
+            if best.value >= beta {
                 break;
             }
         }
         let new_entry: HashEntry = HashEntry {
             hash_key: engine.state.hash_key,
             color: engine.state.color,
-            value: best_val,
+            move_value: best,
             remain_depth: depth,
-            best_move: best_move,
         };
         unsafe {
             HASH_TABLE[(engine.state.hash_key & *HASH_KEY_MASK) as usize] = new_entry;
         }
     }
-    Some(best_val)
+    Some(best)
 }
 
-pub fn search(ref mut engine: &mut AlphaBetaEngine, depth: u8) -> Option<i32> {
-    sub_search(engine, depth, -(i32::max_value()), i32::max_value())
+pub fn search(ref mut engine: &mut AlphaBetaEngine, depth: u8) -> Option<MoveValue> {
+    sub_search(engine, depth, -(i16::max_value()), i16::max_value())
 }

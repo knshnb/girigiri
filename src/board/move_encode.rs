@@ -6,7 +6,7 @@ use csa::parser::*;
 const PROMOTE_MASK: i8 = 0b10000000;
 const TO_MASK: i8 = 0b01111111;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Move {
     pub from: i8,
     pub to: i8,

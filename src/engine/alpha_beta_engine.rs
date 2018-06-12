@@ -27,7 +27,7 @@ impl AlphaBetaEngine {
         }
     }
 
-    pub fn search(&mut self, depth: u8) -> Option<i32> {
+    pub fn search(&mut self, depth: u8) -> Option<MoveValue> {
         search(self, depth)
     }
 
@@ -36,24 +36,23 @@ impl AlphaBetaEngine {
         println!("{}", self.state);
 
         let mut mv = NULL_MOVE;
+        // 反復深化
         for depth in 0..self.depth {
             let start = Instant::now();
-            let eval = self.search(depth as u8);
-            if eval.is_none() {
-                break;
-            }
-            let eval = eval.unwrap();
-            unsafe {
-                mv = HASH_TABLE[(self.state.hash_key & *HASH_KEY_MASK) as usize].best_move;
-            }
+            let next = self.search(depth as u8);
+            // 時間切れ
+            if next.is_none() { break; }
+            let move_value = next.unwrap();
+            mv = move_value.mv;
             let end = start.elapsed();
-            println!("depth: {}, eval: {}, move: ", depth, eval);
+            println!("depth: {}, eval: {}, move: ", depth, move_value.value);
             self.state.print_expectation(depth);
             println!(
                 "time: {}.{:03} sec\n",
                 end.as_secs(),
                 end.subsec_nanos() / 1_000_000
             );
+            // 投了を読み切ったら終了
             if depth > 0 && mv.is_null_move() { break; }
         }
 
@@ -66,13 +65,11 @@ impl AlphaBetaEngine {
     pub fn proceed_move_without_print(&mut self) -> Move {
         let mut mv = NULL_MOVE;
         for depth in 0..self.depth {
-            let eval = self.search(depth as u8);
-            if eval.is_none() {
-                break;
-            }
-            unsafe {
-                mv = HASH_TABLE[(self.state.hash_key & *HASH_KEY_MASK) as usize].best_move;
-            }
+            let next = self.search(depth as u8);
+            // 時間切れ
+            if next.is_none() { break; }
+            mv = next.unwrap().mv;
+            // 投了を読み切ったら終了
             if depth > 0 && mv.is_null_move() { break; }
         }
 
@@ -84,13 +81,13 @@ impl AlphaBetaEngine {
         let mut mv = NULL_MOVE;
         let depth = self.depth;
         let eval = self.search(depth).unwrap();
-        if eval.abs() > 10000 {
-            return false;
-        }
+        // if eval.abs() > 10000 {
+        //     return false;
+        // }
         // println!("{}", self.state);
-        unsafe {
-            mv = HASH_TABLE[(self.state.hash_key & *HASH_KEY_MASK) as usize].best_move;
-        }
+        // unsafe {
+        //     mv = HASH_TABLE[(self.state.hash_key & *HASH_KEY_MASK) as usize].best_move;
+        // }
         // println!("depth: {}, eval: {}, move: ", depth, eval);
         // self.state.print_expectation(depth);
 

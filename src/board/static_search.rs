@@ -1,11 +1,11 @@
-use std::i32;
+use std::i16;
 use std::cmp;
 use board::state::*;
 use board::eval::*;
 use board::position::*;
 
-fn sub_static_search(ref mut state: &mut State, to: Position) -> i32 {
-    let mut best_value = -i32::max_value();
+fn sub_static_search(ref mut state: &mut State, to: Position) -> i16 {
+    let mut best_value = -i16::max_value();
     let moves = state.legal_move_no_drop();
     for mv in moves {
         if mv.to_pos() == to {
@@ -22,8 +22,8 @@ fn sub_static_search(ref mut state: &mut State, to: Position) -> i32 {
     cmp::max(best_value, eval(&state))
 }
 
-pub fn static_search(ref mut state: &mut State) -> i32 {
-    let mut best_value = -i32::max_value();
+pub fn static_search(ref mut state: &mut State) -> i16 {
+    let mut best_value = -i16::max_value();
     let moves = state.legal_move_no_drop();
     for mv in moves {
         if state.is_capture(&mv) || state.is_pawn_promote(&mv) {

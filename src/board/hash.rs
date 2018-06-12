@@ -2,23 +2,21 @@ extern crate rand;
 
 use std::u64;
 use self::rand::Rng;
-use board::move_encode::*;
+use board::alpha_beta::*;
 
 #[derive(Copy, Clone)]
 pub struct HashEntry {
     pub hash_key: u64,
     pub color: bool, // is_black
-    pub value: i32,
+    pub move_value: MoveValue,
     pub remain_depth: u8,
-    pub best_move: Move,
 }
 
 pub const HASH_ENTRY_NONE: HashEntry = HashEntry {
     hash_key: 0,
     color: false,
-    value: 0,
+    move_value: NULL_MOVE_VALUE,
     remain_depth: 0,
-    best_move: NULL_MOVE,
 };
 
 // PCのメモリに応じて設定

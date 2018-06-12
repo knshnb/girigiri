@@ -32,44 +32,44 @@ pub fn write_ppo(ppo: &mut PPoType) {
     f.write_all(&ppo[..]).expect("Cannot write in ppo");
 }
 
-pub const PIECE_TO_WEIGHT: [i32; 32] = [
+pub const PIECE_TO_WEIGHT: [i16; 32] = [
     // white
-    86 * 9 / 10,    // pawn
-    227 * 9 / 10,   // lance
-    256 * 9 / 10,   // knight
-    365 * 9 / 10,   // silver
-    563 * 9 / 10,   // bishop
-    629 * 9 / 10,   // rook
+    9 * 86 / 10,    // pawn
+    9 * 227 / 10,   // lance
+    9 * 256 / 10,   // knight
+    9 * 365 / 10,   // silver
+    9 * 563 / 10,   // bishop
+    9 * 629 / 10,   // rook
     0,              // padding
     0 * 9 / 10,     // null
-    540 * 9 / 10,   // propawn
-    508 * 9 / 10,   // prolance
-    517 * 9 / 10,   // proknight
-    502 * 9 / 10,   // prosilver
-    826 * 9 / 10,   // horse
-    942 * 9 / 10,   // dragon
-    439 * 9 / 10,   // gold
-    15000 * 9 / 10, // king
+    9 * 540 / 10,   // propawn
+    9 * 508 / 10,   // prolance
+    9 * 517 / 10,   // proknight
+    9 * 502 / 10,   // prosilver
+    9 * 826 / 10,   // horse
+    9 * 942 / 10,   // dragon
+    9 * 439 / 10,   // gold
+    9 * (15000 / 10), // king
     // black
-    86 * 9 / 10,    // pawn
-    227 * 9 / 10,   // lance
-    256 * 9 / 10,   // knight
-    365 * 9 / 10,   // silver
-    563 * 9 / 10,   // bishop
-    629 * 9 / 10,   // rook
+    9 * 86 / 10,    // pawn
+    9 * 227 / 10,   // lance
+    9 * 256 / 10,   // knight
+    9 * 365 / 10,   // silver
+    9 * 563 / 10,   // bishop
+    9 * 629 / 10,   // rook
     0,              // padding
     0,              // padding
-    540 * 9 / 10,   // propawn
-    508 * 9 / 10,   // prolance
-    517 * 9 / 10,   // proknight
-    502 * 9 / 10,   // prosilver
-    826 * 9 / 10,   // horse
-    942 * 9 / 10,   // dragon
-    439 * 9 / 10,   // gold
-    15000 * 9 / 10, // king
+    9 * 540 / 10,   // propawn
+    9 * 508 / 10,   // prolance
+    9 * 517 / 10,   // proknight
+    9 * 502 / 10,   // prosilver
+    9 * 826 / 10,   // horse
+    9 * 942 / 10,   // dragon
+    9 * 439 / 10,   // gold
+    9 * (15000 / 10), // king
 ];
 
-pub const KIND_TO_WEIGHT: [i32; 8] = [
+pub const KIND_TO_WEIGHT: [i16; 8] = [
     86,    // pawn
     227,   // lance
     256,   // knight
@@ -220,6 +220,6 @@ pub const KIND_TO_WEIGHT: [i32; 8] = [
 //     }
 // }
 
-pub fn eval(state: &State) -> i32 {
+pub fn eval(state: &State) -> i16 {
     (*state).weight
 }

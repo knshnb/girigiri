@@ -17,7 +17,7 @@ pub struct State {
     pub hand: [Hand; 2],              // hand[0]: white, hand[1]: black
     pub pawn_checker: [[bool; 9]; 2], // pawn_checker[0]: white, pawn_checker[1]: black
     pub hash_key: u64,
-    pub weight: i32,
+    pub weight: i16,
 }
 
 impl State {
@@ -175,7 +175,7 @@ impl State {
         for _ in 0..depth {
             let mv;
             unsafe {
-                mv = HASH_TABLE[(state.hash_key & *HASH_KEY_MASK) as usize].best_move;
+                mv = HASH_TABLE[(state.hash_key & *HASH_KEY_MASK) as usize].move_value.mv;
             }
             state.print_move(&mv);
             state.apply_move(&mv);
